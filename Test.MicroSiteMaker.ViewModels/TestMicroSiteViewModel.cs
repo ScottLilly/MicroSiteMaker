@@ -18,15 +18,15 @@ public class TestMicroSiteViewModel
     public void Test_Populate()
     {
         var viewModel = new MicroSiteViewModel();
-        viewModel.Site.Name = "Hello Tech Recruiters";
-        viewModel.Site.BaseUrl = "hellotechrecruiters.com";
+        viewModel.Site.Name = "My Test Website";
+        viewModel.Site.BaseUrl = "mytestwebsite.com";
         viewModel.Site.HttpsEnabled = true;
 
         viewModel.Site.Page.Add(new WebPage {Title = "Privacy Policy"});
 
         var pages = viewModel.GetWebPages();
 
-        Assert.Equal(1, pages.Count);
+        Assert.Equal(2, pages.Count);
     }
 
 }

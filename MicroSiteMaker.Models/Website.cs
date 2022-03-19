@@ -11,7 +11,7 @@ public class WebSite
 
     public string PageTitleSpaceReplacementCharacter { get; set; }
 
-    public string FontFamily { get; set; }
+    public StyleSheet StyleSheet { get; set; }
 
     public ObservableCollection<WebPage> Page { get; } =
         new ObservableCollection<WebPage>();
@@ -19,6 +19,7 @@ public class WebSite
     public WebSite()
     {
         PageTitleSpaceReplacementCharacter = "-";
-        FontFamily = "font-family: Arial, Helvetica, sans-serif;";
+
+        StyleSheet = new StyleSheet();
     }
 }
