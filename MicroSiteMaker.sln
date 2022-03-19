@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.WPF", "MicroSiteMaker.WPF\MicroSiteMaker.WPF.csproj", "{861A7878-6156-42A8-905D-3B6D853B480D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.WPF", "MicroSiteMaker.WPF\MicroSiteMaker.WPF.csproj", "{861A7878-6156-42A8-905D-3B6D853B480D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.ViewModels", "MicroSiteMaker.ViewModels\MicroSiteMaker.ViewModels.csproj", "{765462BC-AD30-495B-9ED9-556D03592EE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.ViewModels", "MicroSiteMaker.ViewModels\MicroSiteMaker.ViewModels.csproj", "{765462BC-AD30-495B-9ED9-556D03592EE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.Services", "MicroSiteMaker.Services\MicroSiteMaker.Services.csproj", "{E9836967-0917-48DE-957C-5495D6970F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Services", "MicroSiteMaker.Services\MicroSiteMaker.Services.csproj", "{E9836967-0917-48DE-957C-5495D6970F44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.Models", "MicroSiteMaker.Models\MicroSiteMaker.Models.csproj", "{20DC157C-3F84-4A0D-9B05-5EAE2CF199DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Models", "MicroSiteMaker.Models\MicroSiteMaker.Models.csproj", "{20DC157C-3F84-4A0D-9B05-5EAE2CF199DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.Core", "MicroSiteMaker.Core\MicroSiteMaker.Core.csproj", "{61401385-0C5C-403B-88F8-DFCF5D69B250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Core", "MicroSiteMaker.Core\MicroSiteMaker.Core.csproj", "{61401385-0C5C-403B-88F8-DFCF5D69B250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.MicroSiteMaker.ViewModels", "Test.MicroSiteMaker.ViewModels\Test.MicroSiteMaker.ViewModels.csproj", "{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
