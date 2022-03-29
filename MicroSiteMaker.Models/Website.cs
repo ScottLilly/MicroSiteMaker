@@ -6,22 +6,39 @@ public class WebSite
 {
     public ReadOnlyDictionary<string, string> Parameters { get; private set; }
 
-    public string Name => Parameters.GetValueOrDefault("--site") ?? "";
-    public string ProjectDirectory => Parameters.GetValueOrDefault("--path") ?? "";
+    public string Name =>
+        Parameters.GetValueOrDefault("--site") ?? "";
+    public string ProjectDirectory =>
+        Parameters.GetValueOrDefault("--path") ?? "";
 
-    public StyleSheet StyleSheet { get; set; }
-
-    public ObservableCollection<WebPage> Pages { get; } =
-        new ObservableCollection<WebPage>();
-
-    public bool HasErrors => ErrorMessages.Any();
     public List<string> ErrorMessages { get; } =
         new List<string>();
+    public bool HasErrors => ErrorMessages.Any();
+
+    public string InputRootDirectory =>
+        Path.Combine(ProjectDirectory, "input");
+    public string InputPagesDirectory =>
+        Path.Combine(InputRootDirectory, "pages");
+    public string InputTemplatesDirectory =>
+        Path.Combine(InputRootDirectory, "templates");
+    public string InputImagesDirectory =>
+        Path.Combine(InputRootDirectory, "images");
+
+    public string OutputRootDirectory =>
+        Path.Combine(ProjectDirectory, "output");
+    public string OutputImagesDirectory =>
+        Path.Combine(OutputRootDirectory, "images");
+    public string OutputCssDirectory =>
+        Path.Combine(OutputRootDirectory, "css");
+
+    public string CssFileName =>
+        Parameters.GetValueOrDefault("--stylesheet") ?? "stylesheet.css";
+
+    public string TemplateFileName =>
+            Parameters.GetValueOrDefault("--template") ?? "page-template.html";
 
     public WebSite(IDictionary<string, string> args)
     {
-        StyleSheet = new StyleSheet();
-
         AssignArguments(args);
     }
 
@@ -36,7 +53,7 @@ public class WebSite
 
         if (string.IsNullOrWhiteSpace(ProjectDirectory))
         {
-            ErrorMessages.Add("Path is required for '--path' parameter.");
+            ErrorMessages.Add("Parameter '--path' is required.");
         }
     }
 }

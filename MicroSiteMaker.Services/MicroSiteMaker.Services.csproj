@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroSiteMaker.Core\MicroSiteMaker.Core.csproj" />
     <ProjectReference Include="..\MicroSiteMaker.Models\MicroSiteMaker.Models.csproj" />
   </ItemGroup>
 
