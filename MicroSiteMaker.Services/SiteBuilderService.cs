@@ -1,23 +1,22 @@
 ﻿using System.Text;
-using System.Text.RegularExpressions;
 using MicroSiteMaker.Models;
-using Microsoft.VisualBasic;
 
 namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
-    public static void BuildDirectories(string path)
+    public static void BuildDirectories(WebSite webSite)
     {
-        Directory.CreateDirectory(path);
+        Directory.CreateDirectory(webSite.ProjectDirectory);
 
-        Directory.CreateDirectory(Path.Combine(path, "Input"));
-        Directory.CreateDirectory(Path.Combine(path, "Input/Pages"));
-        Directory.CreateDirectory(Path.Combine(path, "Input/Templates"));
-        Directory.CreateDirectory(Path.Combine(path, "Input/Images"));
-        Directory.CreateDirectory(Path.Combine(path, "Input/Snippets"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Pages"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Templates"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Images"));
 
-        Directory.CreateDirectory(Path.Combine(path, "Output"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output/Images"));
+        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output/CSS"));
     }
 
     public static Dictionary<string, string> GetWebPageFiles(WebSite webSite)
@@ -25,9 +24,9 @@ public static class SiteBuilderService
         Dictionary<string, string> files =
             new Dictionary<string, string>();
 
-        foreach (WebPage webPage in webSite.Page)
+        foreach (WebPage webPage in webSite.Pages)
         {
-            files.Add(CleanedWebPageTitle(webPage, webSite.PageTitleSpaceReplacementCharacter),
+            files.Add(CleanedWebPageTitle(webPage, "-"),
                 GetWebPageText(webSite, webPage));
         }
 
