@@ -3,17 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.WPF", "MicroSiteMaker.WPF\MicroSiteMaker.WPF.csproj", "{861A7878-6156-42A8-905D-3B6D853B480D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.ViewModels", "MicroSiteMaker.ViewModels\MicroSiteMaker.ViewModels.csproj", "{765462BC-AD30-495B-9ED9-556D03592EE8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Services", "MicroSiteMaker.Services\MicroSiteMaker.Services.csproj", "{E9836967-0917-48DE-957C-5495D6970F44}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Models", "MicroSiteMaker.Models\MicroSiteMaker.Models.csproj", "{20DC157C-3F84-4A0D-9B05-5EAE2CF199DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroSiteMaker.Core", "MicroSiteMaker.Core\MicroSiteMaker.Core.csproj", "{61401385-0C5C-403B-88F8-DFCF5D69B250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.MicroSiteMaker.ViewModels", "Test.MicroSiteMaker.ViewModels\Test.MicroSiteMaker.ViewModels.csproj", "{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroSiteMaker.Console", "MicroSiteMaker.Console\MicroSiteMaker.Console.csproj", "{0730A394-327A-4354-A577-D067427706A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.MicroSiteMaker", "Test.MicroSiteMaker\Test.MicroSiteMaker.csproj", "{77EAA0F1-0FCA-4284-AB7D-400660A3F576}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,14 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{861A7878-6156-42A8-905D-3B6D853B480D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{861A7878-6156-42A8-905D-3B6D853B480D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{861A7878-6156-42A8-905D-3B6D853B480D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{861A7878-6156-42A8-905D-3B6D853B480D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{765462BC-AD30-495B-9ED9-556D03592EE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{765462BC-AD30-495B-9ED9-556D03592EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{765462BC-AD30-495B-9ED9-556D03592EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{765462BC-AD30-495B-9ED9-556D03592EE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9836967-0917-48DE-957C-5495D6970F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9836967-0917-48DE-957C-5495D6970F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9836967-0917-48DE-957C-5495D6970F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,10 +31,14 @@ Global
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61401385-0C5C-403B-88F8-DFCF5D69B250}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE58FB35-8B66-4F8C-9D8E-4692A77956F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0730A394-327A-4354-A577-D067427706A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0730A394-327A-4354-A577-D067427706A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0730A394-327A-4354-A577-D067427706A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0730A394-327A-4354-A577-D067427706A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77EAA0F1-0FCA-4284-AB7D-400660A3F576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77EAA0F1-0FCA-4284-AB7D-400660A3F576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77EAA0F1-0FCA-4284-AB7D-400660A3F576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77EAA0F1-0FCA-4284-AB7D-400660A3F576}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
