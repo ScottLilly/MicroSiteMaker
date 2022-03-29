@@ -33,7 +33,7 @@ internal class Program
         // Run commands
         if (website.Parameters.ContainsKey("--create"))
         {
-            SiteBuilderService.BuildDirectories(website);
+            SiteBuilderService.CreateDirectoriesAndDefaultFiles(website);
         }
     }
 }

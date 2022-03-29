@@ -5,34 +5,29 @@ namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
-    public static void BuildDirectories(WebSite webSite)
+    public static void CreateDirectoriesAndDefaultFiles(WebSite webSite)
     {
         Directory.CreateDirectory(webSite.ProjectDirectory);
 
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input"));
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Pages"));
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Templates"));
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Input/Images"));
+        string inputRootDirectory = Path.Combine(webSite.ProjectDirectory, "Input");
+        string inputPagesDirectory = Path.Combine(inputRootDirectory, "Pages");
+        string inputTemplatesDirectory = Path.Combine(inputRootDirectory, "Templates");
 
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output"));
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output/Images"));
-        Directory.CreateDirectory(Path.Combine(webSite.ProjectDirectory, "Output/CSS"));
-    }
+        Directory.CreateDirectory(inputRootDirectory);
+        Directory.CreateDirectory(inputPagesDirectory);
+        Directory.CreateDirectory(inputTemplatesDirectory);
+        Directory.CreateDirectory(Path.Combine(inputRootDirectory, "Images"));
 
-    public static Dictionary<string, string> GetWebPageFiles(WebSite webSite)
-    {
-        Dictionary<string, string> files =
-            new Dictionary<string, string>();
+        string outputRootDirectory = Path.Combine(webSite.ProjectDirectory, "Output");
+        Directory.CreateDirectory(outputRootDirectory);
+        Directory.CreateDirectory(Path.Combine(outputRootDirectory, "Images"));
+        Directory.CreateDirectory(Path.Combine(outputRootDirectory, "CSS"));
 
-        foreach (WebPage webPage in webSite.Pages)
-        {
-            files.Add(CleanedWebPageTitle(webPage, "-"),
-                GetWebPageText(webSite, webPage));
-        }
+        CreateFile(inputTemplatesDirectory, "stylesheet.css", GetStyleSheetText());
 
-        files.Add("stylesheet.css", GetStyleSheet(webSite.StyleSheet));
-
-        return files;
+        CreateFile(inputPagesDirectory, "about.md", GetAboutPageMarkdown(webSite));
+        CreateFile(inputPagesDirectory, "privacy-policy.md", GetPrivacyPolicyMarkdown(webSite));
+        CreateFile(inputPagesDirectory, "contact.md", GetContactPageMarkdown(webSite));
     }
 
     private static string GetWebPageText(WebSite webSite, WebPage webPage)
@@ -54,45 +49,72 @@ public static class SiteBuilderService
         return text.ToString();
     }
 
-    private static string GetStyleSheet(StyleSheet styleSheet)
+    private static IEnumerable<string> GetStyleSheetText()
     {
-        StringBuilder text = new StringBuilder();
-
-        text.AppendLine(".left, .right {");
-        text.AppendLine("   float: left;");
-        text.AppendLine("   width: 20%;");
-        text.AppendLine("}");
-        text.AppendLine(".main {");
-        text.AppendLine("   float: left;");
-        text.AppendLine("   width: 60%;");
-        text.AppendLine("}");
-        // If the screen is less than 800 pixels wide, use 100% of it
-        text.AppendLine("@media screen and (max-width: 800px) {");
-        text.AppendLine("   .left, .main, .right {");
-        text.AppendLine("      width: 100%;");
-        text.AppendLine("   }");
-        text.AppendLine("}");
-
-        //text.AppendLine("div {");
-        //text.AppendLine("   width: 500px;");
-        //text.AppendLine("   margin: auto;");
-        //text.AppendLine("}");
-        text.AppendLine("h1 {");
-        text.AppendLine("   text-align: center;");
-        text.AppendLine("   color: #0000b8;");
-        text.AppendLine("}");
-        text.AppendLine("h2,");
-        text.AppendLine("h3 {");
-        text.AppendLine("   text-align: center;");
-        text.AppendLine("   color: #0000b8;");
-        text.AppendLine("   padding-top: 25px;");
-        text.AppendLine("}");
-
-        return text.ToString();
+        return new List<string>
+        {
+            "font-family: Arial, Helvetica, sans-serif;",
+            // Content width and alignment
+            ".left, .right {",
+            "   float: left;",
+            "   width: 20%;",
+            "}",
+            ".main {",
+            "   float: left;",
+            "   width: 60%;",
+            "}",
+            // If the screen is less than 800 pixels wide, use 100% of it
+            "@media screen and (max-width: 800px) {",
+            "   .left, .main, .right {",
+            "      width: 100%;",
+            "   }",
+            "}",
+            // Text formatting
+            "h1 {",
+            "   text-align: center;",
+            "   color: #0000b8;",
+            "}",
+            "h2,",
+            "h3 {",
+            "   text-align: center;",
+            "   color: #0000b8;",
+            "   padding-top: 25px;",
+            "}"
+        };
     }
 
-    private static string CleanedWebPageTitle(WebPage webPage, string spaceReplacementCharacter)
+    private static IEnumerable<string> GetAboutPageMarkdown(WebSite webSite)
     {
-        return webPage.Title.ToLower().Replace(" ", spaceReplacementCharacter) + ".html";
+        return new List<string>
+        {
+            $"## About {webSite.Name}",
+            "",
+            $"Welcome to {webSite.Name}"
+        };
+    }
+
+    private static IEnumerable<string> GetPrivacyPolicyMarkdown(WebSite webSite)
+    {
+        return new List<string>
+        {
+            "## Privacy Policy",
+            "",
+            $"{webSite.Name} does not track any of your personal information."
+        };
+    }
+
+    private static IEnumerable<string> GetContactPageMarkdown(WebSite webSite)
+    {
+        return new List<string>
+        {
+            "## Contact Information",
+            "",
+            $"Please contact {webSite.Name} here:"
+        };
+    }
+
+    private static void CreateFile(string path, string filename, IEnumerable<string> contents)
+    {
+        File.WriteAllLines(Path.Combine(path, filename), contents);
     }
 }
