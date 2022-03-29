@@ -1,4 +1,5 @@
-﻿using MicroSiteMaker.Services;
+﻿using MicroSiteMaker.Models;
+using MicroSiteMaker.Services;
 
 namespace MicroSiteMaker.Console;
 
@@ -6,16 +7,25 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        // Parse arguments and show error messages, if any
         var argDictionary = ArgParser.GetArgumentDictionary(args);
 
-        if (argDictionary.ContainsKey("--create"))
+        var website = new WebSite(argDictionary);
+
+        if (website.HasErrors)
         {
-            if (string.IsNullOrWhiteSpace(argDictionary["--create"]))
+            foreach (string error in website.ErrorMessages)
             {
-                throw new ArgumentException("Missing path for '--create' parameter");
+                System.Console.WriteLine(error);
             }
 
-            SiteBuilderService.BuildDirectories(argDictionary["--create"]);
+            return;
+        }
+
+        // Run commands
+        if (website.Parameters.ContainsKey("--create"))
+        {
+            SiteBuilderService.BuildDirectories(website);
         }
     }
 }
