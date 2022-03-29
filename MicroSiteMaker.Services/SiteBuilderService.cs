@@ -42,6 +42,11 @@ public static class SiteBuilderService
 
     private static void CopyImageFilesToOutputDirectory(WebSite webSite)
     {
+        foreach (FileInfo fileInfo in Directory.GetFiles(webSite.InputImagesDirectory)
+                     .Select(f => new FileInfo(f)))
+        {
+            File.Copy(fileInfo.FullName, Path.Combine(webSite.OutputImagesDirectory, fileInfo.Name));
+        }
     }
 
     private static void BuildPagesInOutputDirectory(WebSite website)
@@ -129,7 +134,9 @@ public static class SiteBuilderService
     {
         return new List<string>
         {
-            "font-family: Arial, Helvetica, sans-serif;",
+            "body {",
+            "	font-family: Arial, Helvetica, sans-serif;",
+            "}",
             "h1 {",
             "   text-align: center;",
             "   color: #0000b8;",
@@ -139,6 +146,10 @@ public static class SiteBuilderService
             "   text-align: center;",
             "   color: #0000b8;",
             "   padding-top: 25px;",
+            "}",
+            ".content {",
+            "  max-width: 600px;",
+            "  margin: auto;",
             "}"
         };
     }
@@ -150,9 +161,10 @@ public static class SiteBuilderService
             "<html>",
             "<head>",
             "<title>{{website-name}} - {{page-name}}</title>",
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\"css\\{{stylesheet-name}}\" media=\"screen\">",
+            "<meta charset=\"UTF-8\">",
+            "<link rel=\"stylesheet\" type=\"text/css\" href=\".\\css\\{{stylesheet-name}}\" media=\"screen\">",
             "</head>",
-            "<body style=\"width: 500px;margin: auto;\">",
+            "<body class=\"content\">",
             "{{page-content}}",
             "</body>",
             "</html>"
