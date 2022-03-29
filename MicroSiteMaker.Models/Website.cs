@@ -16,20 +16,26 @@ public class WebSite
     public bool HasErrors => ErrorMessages.Any();
 
     public string InputRootDirectory =>
-        Path.Combine(ProjectDirectory, "Input");
+        Path.Combine(ProjectDirectory, "input");
     public string InputPagesDirectory =>
-        Path.Combine(InputRootDirectory, "Pages");
+        Path.Combine(InputRootDirectory, "pages");
     public string InputTemplatesDirectory =>
-        Path.Combine(InputRootDirectory, "Templates");
+        Path.Combine(InputRootDirectory, "templates");
     public string InputImagesDirectory =>
-        Path.Combine(InputRootDirectory, "Images");
+        Path.Combine(InputRootDirectory, "images");
 
     public string OutputRootDirectory =>
-        Path.Combine(ProjectDirectory, "Output");
+        Path.Combine(ProjectDirectory, "output");
     public string OutputImagesDirectory =>
-        Path.Combine(OutputRootDirectory, "Images");
+        Path.Combine(OutputRootDirectory, "images");
     public string OutputCssDirectory =>
-        Path.Combine(OutputRootDirectory, "CSS");
+        Path.Combine(OutputRootDirectory, "css");
+
+    public string CssFileName =>
+        Parameters.GetValueOrDefault("--stylesheet") ?? "stylesheet.css";
+
+    public string TemplateFileName =>
+            Parameters.GetValueOrDefault("--template") ?? "page-template.html";
 
     public WebSite(IDictionary<string, string> args)
     {

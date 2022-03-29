@@ -13,7 +13,8 @@ public static class SiteBuilderService
         Directory.CreateDirectory(webSite.InputTemplatesDirectory);
         Directory.CreateDirectory(webSite.InputImagesDirectory);
 
-        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultStyleSheetText());
+        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultStyleSheet());
+        CreateFile(webSite.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate(webSite));
 
         CreateFile(webSite.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown(webSite));
         CreateFile(webSite.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyMarkdown(webSite));
@@ -27,6 +28,7 @@ public static class SiteBuilderService
         Directory.CreateDirectory(webSite.OutputCssDirectory);
 
         CopyCssFilesToOutputDirectory(webSite);
+        CopyImageFilesToOutputDirectory(webSite);
         BuildPagesInOutputDirectory(webSite);
     }
 
@@ -38,63 +40,96 @@ public static class SiteBuilderService
         }
     }
 
+    private static void CopyImageFilesToOutputDirectory(WebSite webSite)
+    {
+    }
+
     private static void BuildPagesInOutputDirectory(WebSite website)
     {
+        var templateLines = GetPageTemplateLines(website);
+
         foreach (FileInfo fileInfo in GetFilesOfExtension(website.InputPagesDirectory, "md"))
         {
-            Console.WriteLine(fileInfo.FullName);
+            var inputLines = File.ReadAllLines(fileInfo.FullName);
+            var htmlLines = HtmlLinesFromMarkdownLines(inputLines);
+
+            var outputLines = new List<string>();
+
+            foreach (string templateLine in templateLines)
+            {
+                if (templateLine.StartsWith("{{page-content}}"))
+                {
+                    outputLines.AddRange(htmlLines);
+                }
+                else
+                {
+                    outputLines.Add(
+                        templateLine
+                            .Replace("{{page-name}}", fileInfo.Name));
+                }
+            }
+
+            CreateFile(website.OutputRootDirectory,
+                $"{MarkdownFileNameToHtmlFileName(fileInfo.Name)}", outputLines);
         }
     }
 
-    private static List<FileInfo> GetFilesOfExtension(string path, string extension)
+    private static List<string> GetPageTemplateLines(WebSite website)
     {
-        return Directory.GetFiles(path)
-            .Select(f => new FileInfo(f))
-            .Where(f => f.Extension.Replace(".", "")
-                .Equals(extension.Replace(".", ""), StringComparison.InvariantCultureIgnoreCase))
+        return File.ReadAllLines(Path.Combine(website.InputTemplatesDirectory, website.TemplateFileName))
+            .Select(line => line
+                .Replace("{{website-name}}", website.Name)
+                .Replace("{{stylesheet-name}}", website.CssFileName))
             .ToList();
     }
 
-    private static string GetWebPageText(WebSite webSite)
+    private static List<string> HtmlLinesFromMarkdownLines(IEnumerable<string> markdownLines)
     {
-        StringBuilder text = new StringBuilder();
+        var htmlLines = new List<string>();
 
-        text.AppendLine("<html>");
+        foreach (string markdownFileLine in markdownLines)
+        {
+            var words = markdownFileLine.Split(" ");
 
-        text.AppendLine("<head>");
-        text.AppendLine($"<title>{webSite.Name}</title>");
-        text.AppendLine("<link rel=\"stylesheet\" type=\"text/css\" href=\"stylesheet.css\" media=\"screen\">");
-        text.AppendLine("</head>");
+            if (words.Length == 0)
+            {
+                htmlLines.Add("");
+                continue;
+            }
 
-        text.AppendLine("<body>");
-        text.AppendLine("</body>");
+            var firstWord = words[0];
+            var remainingWords = string.Join(" ", words.Skip(1));
 
-        text.AppendLine("</html>");
+            switch (firstWord)
+            {
+                case "#":
+                    htmlLines.Add($"<H1>{remainingWords}</H1>");
+                    break;
+                case "##":
+                    htmlLines.Add($"<H2>{remainingWords}</H2>");
+                    break;
+                case "###":
+                    htmlLines.Add($"<H3>{remainingWords}</H3>");
+                    break;
+                default:
+                    htmlLines.Add(markdownFileLine);
+                    break;
+            }
+        }
 
-        return text.ToString();
+        return htmlLines;
     }
 
-    private static IEnumerable<string> DefaultStyleSheetText()
+    private static string MarkdownFileNameToHtmlFileName(string filename)
+    {
+        return filename.ToLowerInvariant().Replace("  ", " ").Replace(" ", "-").Replace(".md", ".html");
+    }
+
+    private static IEnumerable<string> DefaultStyleSheet()
     {
         return new List<string>
         {
             "font-family: Arial, Helvetica, sans-serif;",
-            // Content width and alignment
-            ".left, .right {",
-            "   float: left;",
-            "   width: 20%;",
-            "}",
-            ".main {",
-            "   float: left;",
-            "   width: 60%;",
-            "}",
-            // If the screen is less than 800 pixels wide, use 100% of it
-            "@media screen and (max-width: 800px) {",
-            "   .left, .main, .right {",
-            "      width: 100%;",
-            "   }",
-            "}",
-            // Text formatting
             "h1 {",
             "   text-align: center;",
             "   color: #0000b8;",
@@ -105,6 +140,22 @@ public static class SiteBuilderService
             "   color: #0000b8;",
             "   padding-top: 25px;",
             "}"
+        };
+    }
+
+    private static IEnumerable<string> DefaultWebPageTemplate(WebSite webSite)
+    {
+        return new List<string>
+        {
+            "<html>",
+            "<head>",
+            "<title>{{website-name}} - {{page-name}}</title>",
+            "<link rel=\"stylesheet\" type=\"text/css\" href=\"css\\{{stylesheet-name}}\" media=\"screen\">",
+            "</head>",
+            "<body style=\"width: 500px;margin: auto;\">",
+            "{{page-content}}",
+            "</body>",
+            "</html>"
         };
     }
 
@@ -136,6 +187,15 @@ public static class SiteBuilderService
             "",
             $"Please contact {webSite.Name} here:"
         };
+    }
+
+    private static List<FileInfo> GetFilesOfExtension(string path, string extension)
+    {
+        return Directory.GetFiles(path)
+            .Select(f => new FileInfo(f))
+            .Where(f => f.Extension.Replace(".", "")
+                .Equals(extension.Replace(".", ""), StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
     }
 
     private static void CreateFile(string path, string filename, IEnumerable<string> contents)
