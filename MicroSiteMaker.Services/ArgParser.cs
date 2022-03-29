@@ -33,4 +33,15 @@ public static  class ArgParser
         return argDictionary;
     }
 
+    public static void DisplayHelp()
+    {
+        Console.WriteLine("Parameters");
+        Console.WriteLine("===================================");
+        Console.WriteLine("--site <URL of website> (required)");
+        Console.WriteLine("--path <root directory of files used by, or created by, MicroSiteMaker> (required)");
+        Console.WriteLine("");
+        Console.WriteLine("Commands");
+        Console.WriteLine("===================================");
+        Console.WriteLine("--create (builds directories and creates default files)");
+    }
 }
