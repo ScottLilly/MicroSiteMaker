@@ -6,22 +6,33 @@ public class WebSite
 {
     public ReadOnlyDictionary<string, string> Parameters { get; private set; }
 
-    public string Name => Parameters.GetValueOrDefault("--site") ?? "";
-    public string ProjectDirectory => Parameters.GetValueOrDefault("--path") ?? "";
+    public string Name =>
+        Parameters.GetValueOrDefault("--site") ?? "";
+    public string ProjectDirectory =>
+        Parameters.GetValueOrDefault("--path") ?? "";
 
-    public StyleSheet StyleSheet { get; set; }
-
-    public ObservableCollection<WebPage> Pages { get; } =
-        new ObservableCollection<WebPage>();
-
-    public bool HasErrors => ErrorMessages.Any();
     public List<string> ErrorMessages { get; } =
         new List<string>();
+    public bool HasErrors => ErrorMessages.Any();
+
+    public string InputRootDirectory =>
+        Path.Combine(ProjectDirectory, "Input");
+    public string InputPagesDirectory =>
+        Path.Combine(InputRootDirectory, "Pages");
+    public string InputTemplatesDirectory =>
+        Path.Combine(InputRootDirectory, "Templates");
+    public string InputImagesDirectory =>
+        Path.Combine(InputRootDirectory, "Images");
+
+    public string OutputRootDirectory =>
+        Path.Combine(ProjectDirectory, "Output");
+    public string OutputImagesDirectory =>
+        Path.Combine(OutputRootDirectory, "Images");
+    public string OutputCssDirectory =>
+        Path.Combine(OutputRootDirectory, "CSS");
 
     public WebSite(IDictionary<string, string> args)
     {
-        StyleSheet = new StyleSheet();
-
         AssignArguments(args);
     }
 
@@ -36,7 +47,7 @@ public class WebSite
 
         if (string.IsNullOrWhiteSpace(ProjectDirectory))
         {
-            ErrorMessages.Add("Path is required for '--path' parameter.");
+            ErrorMessages.Add("Parameter '--path' is required.");
         }
     }
 }

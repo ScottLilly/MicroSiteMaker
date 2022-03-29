@@ -5,32 +5,57 @@ namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
-    public static void CreateDirectoriesAndDefaultFiles(WebSite webSite)
+    public static void CreateInputDirectoriesAndDefaultFiles(WebSite webSite)
     {
         Directory.CreateDirectory(webSite.ProjectDirectory);
+        Directory.CreateDirectory(webSite.InputRootDirectory);
+        Directory.CreateDirectory(webSite.InputPagesDirectory);
+        Directory.CreateDirectory(webSite.InputTemplatesDirectory);
+        Directory.CreateDirectory(webSite.InputImagesDirectory);
 
-        string inputRootDirectory = Path.Combine(webSite.ProjectDirectory, "Input");
-        string inputPagesDirectory = Path.Combine(inputRootDirectory, "Pages");
-        string inputTemplatesDirectory = Path.Combine(inputRootDirectory, "Templates");
+        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultStyleSheetText());
 
-        Directory.CreateDirectory(inputRootDirectory);
-        Directory.CreateDirectory(inputPagesDirectory);
-        Directory.CreateDirectory(inputTemplatesDirectory);
-        Directory.CreateDirectory(Path.Combine(inputRootDirectory, "Images"));
-
-        string outputRootDirectory = Path.Combine(webSite.ProjectDirectory, "Output");
-        Directory.CreateDirectory(outputRootDirectory);
-        Directory.CreateDirectory(Path.Combine(outputRootDirectory, "Images"));
-        Directory.CreateDirectory(Path.Combine(outputRootDirectory, "CSS"));
-
-        CreateFile(inputTemplatesDirectory, "stylesheet.css", GetStyleSheetText());
-
-        CreateFile(inputPagesDirectory, "about.md", GetAboutPageMarkdown(webSite));
-        CreateFile(inputPagesDirectory, "privacy-policy.md", GetPrivacyPolicyMarkdown(webSite));
-        CreateFile(inputPagesDirectory, "contact.md", GetContactPageMarkdown(webSite));
+        CreateFile(webSite.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown(webSite));
+        CreateFile(webSite.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyMarkdown(webSite));
+        CreateFile(webSite.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown(webSite));
     }
 
-    private static string GetWebPageText(WebSite webSite, WebPage webPage)
+    public static void CreateOutputDirectoriesAndFiles(WebSite webSite)
+    {
+        Directory.CreateDirectory(webSite.OutputRootDirectory);
+        Directory.CreateDirectory(webSite.OutputImagesDirectory);
+        Directory.CreateDirectory(webSite.OutputCssDirectory);
+
+        CopyCssFilesToOutputDirectory(webSite);
+        BuildPagesInOutputDirectory(webSite);
+    }
+
+    private static void CopyCssFilesToOutputDirectory(WebSite webSite)
+    {
+        foreach (FileInfo fileInfo in GetFilesOfExtension(webSite.InputTemplatesDirectory, "css"))
+        {
+            File.Copy(fileInfo.FullName, Path.Combine(webSite.OutputCssDirectory, fileInfo.Name));
+        }
+    }
+
+    private static void BuildPagesInOutputDirectory(WebSite website)
+    {
+        foreach (FileInfo fileInfo in GetFilesOfExtension(website.InputPagesDirectory, "md"))
+        {
+            Console.WriteLine(fileInfo.FullName);
+        }
+    }
+
+    private static List<FileInfo> GetFilesOfExtension(string path, string extension)
+    {
+        return Directory.GetFiles(path)
+            .Select(f => new FileInfo(f))
+            .Where(f => f.Extension.Replace(".", "")
+                .Equals(extension.Replace(".", ""), StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+    }
+
+    private static string GetWebPageText(WebSite webSite)
     {
         StringBuilder text = new StringBuilder();
 
@@ -49,7 +74,7 @@ public static class SiteBuilderService
         return text.ToString();
     }
 
-    private static IEnumerable<string> GetStyleSheetText()
+    private static IEnumerable<string> DefaultStyleSheetText()
     {
         return new List<string>
         {
@@ -83,7 +108,7 @@ public static class SiteBuilderService
         };
     }
 
-    private static IEnumerable<string> GetAboutPageMarkdown(WebSite webSite)
+    private static IEnumerable<string> DefaultAboutPageMarkdown(WebSite webSite)
     {
         return new List<string>
         {
@@ -93,7 +118,7 @@ public static class SiteBuilderService
         };
     }
 
-    private static IEnumerable<string> GetPrivacyPolicyMarkdown(WebSite webSite)
+    private static IEnumerable<string> DefaultPrivacyPolicyMarkdown(WebSite webSite)
     {
         return new List<string>
         {
@@ -103,7 +128,7 @@ public static class SiteBuilderService
         };
     }
 
-    private static IEnumerable<string> GetContactPageMarkdown(WebSite webSite)
+    private static IEnumerable<string> DefaultContactPageMarkdown(WebSite webSite)
     {
         return new List<string>
         {
