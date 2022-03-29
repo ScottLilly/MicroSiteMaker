@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MicroSiteMaker.Core\MicroSiteMaker.Core.csproj" />
     <ProjectReference Include="..\MicroSiteMaker.Models\MicroSiteMaker.Models.csproj" />
-    <ProjectReference Include="..\MicroSiteMaker.ViewModels\MicroSiteMaker.ViewModels.csproj" />
+    <ProjectReference Include="..\MicroSiteMaker.Services\MicroSiteMaker.Services.csproj" />
   </ItemGroup>
 
 </Project>
