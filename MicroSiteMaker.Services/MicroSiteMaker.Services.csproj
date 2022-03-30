@@ -33,6 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.28.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\DefaultAboutPageMarkdown.txt" />
     <Resource Include="Resources\DefaultContactPageMarkdown.txt" />
     <Resource Include="Resources\DefaultCssStylesheet.txt" />

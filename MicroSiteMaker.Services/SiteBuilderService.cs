@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Markdig;
 using MicroSiteMaker.Models;
 
 namespace MicroSiteMaker.Services;
@@ -64,16 +65,15 @@ public static class SiteBuilderService
 
         foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
         {
-            var inputLines = File.ReadAllLines(fileInfo.FullName);
-            var htmlLines = HtmlLinesFromMarkdownLines(inputLines);
-
             var outputLines = new List<string>();
 
             foreach (string templateLine in templateLines)
             {
                 if (templateLine.StartsWith("{{page-content}}"))
                 {
-                    outputLines.AddRange(htmlLines);
+                    var inputLines = File.ReadAllLines(fileInfo.FullName);
+
+                    outputLines.AddRange(inputLines.Select(line => Markdown.ToHtml(line)));
                 }
                 else
                 {
@@ -95,43 +95,6 @@ public static class SiteBuilderService
                 .Replace("{{website-name}}", website.Name)
                 .Replace("{{stylesheet-name}}", website.CssFileName))
             .ToList();
-    }
-
-    private static List<string> HtmlLinesFromMarkdownLines(IEnumerable<string> markdownLines)
-    {
-        var htmlLines = new List<string>();
-
-        foreach (string markdownFileLine in markdownLines)
-        {
-            var words = markdownFileLine.Split(" ");
-
-            if (words.Length == 0)
-            {
-                htmlLines.Add("");
-                continue;
-            }
-
-            var firstWord = words[0];
-            var remainingWords = string.Join(" ", words.Skip(1));
-
-            switch (firstWord)
-            {
-                case "#":
-                    htmlLines.Add($"<H1>{remainingWords}</H1>");
-                    break;
-                case "##":
-                    htmlLines.Add($"<H2>{remainingWords}</H2>");
-                    break;
-                case "###":
-                    htmlLines.Add($"<H3>{remainingWords}</H3>");
-                    break;
-                default:
-                    htmlLines.Add(markdownFileLine);
-                    break;
-            }
-        }
-
-        return htmlLines;
     }
 
     private static string MarkdownFileNameToHtmlFileName(string filename)
