@@ -25,7 +25,11 @@ public static class SiteBuilderService
     {
         // Delete existing folders and files
         var rootDirectory = new DirectoryInfo(webSite.OutputRootDirectory);
-        rootDirectory.Delete(true);
+
+        if (rootDirectory.Exists)
+        {
+            rootDirectory.Delete(true);
+        }
 
         // Create the new folders and files
         Directory.CreateDirectory(webSite.OutputRootDirectory);
