@@ -1,0 +1,10 @@
+﻿<html>
+<head>
+<title>{{website-name}} - {{page-name}}</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href=".\css\{{stylesheet-name}}" media="screen">
+</head>
+<body class="content">
+{{page-content}}
+</body>
+</html>

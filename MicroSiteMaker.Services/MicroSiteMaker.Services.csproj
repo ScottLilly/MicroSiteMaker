@@ -7,7 +7,47 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\DefaultAboutPageMarkdown.txt" />
+    <None Remove="Resources\DefaultContactPageMarkdown.txt" />
+    <None Remove="Resources\DefaultCssStylesheet.txt" />
+    <None Remove="Resources\DefaultPrivacyPolicyPageMarkdown.txt" />
+    <None Remove="Resources\DefaultWebPageTemplate.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DefaultAboutPageMarkdown.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultContactPageMarkdown.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultCssStylesheet.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultPrivacyPolicyPageMarkdown.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultWebPageTemplate.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\DefaultAboutPageMarkdown.txt" />
+    <Resource Include="Resources\DefaultContactPageMarkdown.txt" />
+    <Resource Include="Resources\DefaultCssStylesheet.txt" />
+    <Resource Include="Resources\DefaultPrivacyPolicyPageMarkdown.txt" />
+    <Resource Include="Resources\DefaultWebPageTemplate.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MicroSiteMaker.Models\MicroSiteMaker.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ArgParser.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

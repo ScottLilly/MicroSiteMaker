@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using System.Reflection;
 using MicroSiteMaker.Models;
 
 namespace MicroSiteMaker.Services;
@@ -13,16 +13,21 @@ public static class SiteBuilderService
         Directory.CreateDirectory(webSite.InputTemplatesDirectory);
         Directory.CreateDirectory(webSite.InputImagesDirectory);
 
-        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultStyleSheet());
-        CreateFile(webSite.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate(webSite));
+        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
+        CreateFile(webSite.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate());
 
-        CreateFile(webSite.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown(webSite));
-        CreateFile(webSite.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyMarkdown(webSite));
-        CreateFile(webSite.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown(webSite));
+        CreateFile(webSite.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown());
+        CreateFile(webSite.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyPageMarkdown());
+        CreateFile(webSite.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown());
     }
 
     public static void CreateOutputDirectoriesAndFiles(WebSite webSite)
     {
+        // Delete existing folders and files
+        var rootDirectory = new DirectoryInfo(webSite.OutputRootDirectory);
+        rootDirectory.Delete(true);
+
+        // Create the new folders and files
         Directory.CreateDirectory(webSite.OutputRootDirectory);
         Directory.CreateDirectory(webSite.OutputImagesDirectory);
         Directory.CreateDirectory(webSite.OutputCssDirectory);
@@ -34,7 +39,7 @@ public static class SiteBuilderService
 
     private static void CopyCssFilesToOutputDirectory(WebSite webSite)
     {
-        foreach (FileInfo fileInfo in GetFilesOfExtension(webSite.InputTemplatesDirectory, "css"))
+        foreach (FileInfo fileInfo in GetFilesWithExtension(webSite.InputTemplatesDirectory, "css"))
         {
             File.Copy(fileInfo.FullName, Path.Combine(webSite.OutputCssDirectory, fileInfo.Name));
         }
@@ -53,7 +58,7 @@ public static class SiteBuilderService
     {
         var templateLines = GetPageTemplateLines(website);
 
-        foreach (FileInfo fileInfo in GetFilesOfExtension(website.InputPagesDirectory, "md"))
+        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
         {
             var inputLines = File.ReadAllLines(fileInfo.FullName);
             var htmlLines = HtmlLinesFromMarkdownLines(inputLines);
@@ -130,78 +135,7 @@ public static class SiteBuilderService
         return filename.ToLowerInvariant().Replace("  ", " ").Replace(" ", "-").Replace(".md", ".html");
     }
 
-    private static IEnumerable<string> DefaultStyleSheet()
-    {
-        return new List<string>
-        {
-            "body {",
-            "	font-family: Arial, Helvetica, sans-serif;",
-            "}",
-            "h1 {",
-            "   text-align: center;",
-            "   color: #0000b8;",
-            "}",
-            "h2,",
-            "h3 {",
-            "   text-align: center;",
-            "   color: #0000b8;",
-            "   padding-top: 25px;",
-            "}",
-            ".content {",
-            "  max-width: 600px;",
-            "  margin: auto;",
-            "}"
-        };
-    }
-
-    private static IEnumerable<string> DefaultWebPageTemplate(WebSite webSite)
-    {
-        return new List<string>
-        {
-            "<html>",
-            "<head>",
-            "<title>{{website-name}} - {{page-name}}</title>",
-            "<meta charset=\"UTF-8\">",
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\".\\css\\{{stylesheet-name}}\" media=\"screen\">",
-            "</head>",
-            "<body class=\"content\">",
-            "{{page-content}}",
-            "</body>",
-            "</html>"
-        };
-    }
-
-    private static IEnumerable<string> DefaultAboutPageMarkdown(WebSite webSite)
-    {
-        return new List<string>
-        {
-            $"## About {webSite.Name}",
-            "",
-            $"Welcome to {webSite.Name}"
-        };
-    }
-
-    private static IEnumerable<string> DefaultPrivacyPolicyMarkdown(WebSite webSite)
-    {
-        return new List<string>
-        {
-            "## Privacy Policy",
-            "",
-            $"{webSite.Name} does not track any of your personal information."
-        };
-    }
-
-    private static IEnumerable<string> DefaultContactPageMarkdown(WebSite webSite)
-    {
-        return new List<string>
-        {
-            "## Contact Information",
-            "",
-            $"Please contact {webSite.Name} here:"
-        };
-    }
-
-    private static List<FileInfo> GetFilesOfExtension(string path, string extension)
+    private static List<FileInfo> GetFilesWithExtension(string path, string extension)
     {
         return Directory.GetFiles(path)
             .Select(f => new FileInfo(f))
@@ -214,4 +148,33 @@ public static class SiteBuilderService
     {
         File.WriteAllLines(Path.Combine(path, filename), contents);
     }
+
+    private static IEnumerable<string> GetLinesFromResource(string resourceName)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        using Stream stream = assembly.GetManifestResourceStream(resourceName);
+        using StreamReader reader = new StreamReader(stream);
+
+        return reader.ReadToEnd().Split(Environment.NewLine).ToList();
+    }
+
+    #region Read resource files for default files
+
+    private static IEnumerable<string> DefaultCssStylesheet() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultCssStylesheet.txt");
+
+    private static IEnumerable<string> DefaultWebPageTemplate() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultWebPageTemplate.txt");
+
+    private static IEnumerable<string> DefaultAboutPageMarkdown() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultAboutPageMarkdown.txt");
+
+    private static IEnumerable<string> DefaultPrivacyPolicyPageMarkdown() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultPrivacyPolicyPageMarkdown.txt");
+
+    private static IEnumerable<string> DefaultContactPageMarkdown() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultContactPageMarkdown.txt");
+
+    #endregion
 }
