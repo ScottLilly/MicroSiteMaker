@@ -79,7 +79,7 @@ public static class SiteBuilderService
                 {
                     outputLines.Add(
                         templateLine
-                            .Replace("{{page-name}}", fileInfo.Name));
+                            .Replace("{{page-name}}", Path.GetFileNameWithoutExtension(fileInfo.Name)));
                 }
             }
 
