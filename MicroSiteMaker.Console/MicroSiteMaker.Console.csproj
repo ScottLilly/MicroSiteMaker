@@ -14,4 +14,10 @@
     <ProjectReference Include="..\MicroSiteMaker.Services\MicroSiteMaker.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Licenses\Markdig.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
