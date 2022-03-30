@@ -1,0 +1,17 @@
+﻿body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+   text-align: center;
+   color: #0000b8;
+}
+h2,
+h3 {
+   text-align: center;
+   color: #0000b8;
+   padding-top: 25px;
+}
+.content {
+  max-width: 600px;
+  margin: auto;
+}
