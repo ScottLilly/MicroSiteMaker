@@ -73,12 +73,15 @@ public static class SiteBuilderService
                 {
                     var inputLines = File.ReadAllLines(fileInfo.FullName);
 
-                    outputLines.AddRange(inputLines.Select(line => Markdown.ToHtml(line)));
+                    foreach (string inputLine in inputLines)
+                    {
+                        outputLines.Add(Markdown.ToHtml(ReplacedText(inputLine)));
+                    }
                 }
                 else
                 {
                     outputLines.Add(
-                        templateLine
+                        ReplacedText(templateLine)
                             .Replace("{{page-name}}", Path.GetFileNameWithoutExtension(fileInfo.Name)));
                 }
             }
@@ -86,6 +89,16 @@ public static class SiteBuilderService
             CreateFile(website.OutputRootDirectory,
                 $"{MarkdownFileNameToHtmlFileName(fileInfo.Name)}", outputLines);
         }
+    }
+
+    private static string ReplacedText(string rawText)
+    {
+        return rawText
+            .Replace("{{date-year}}", DateTime.Now.Year.ToString())
+            .Replace("{{date-month}}", DateTime.Now.Month.ToString())
+            .Replace("{{date-month-name}}", DateTime.Now.ToString("MMMM"))
+            .Replace("{{date-date}}", DateTime.Now.Day.ToString())
+            .Replace("{{date-dow}}", DateTime.Now.DayOfWeek.ToString());
     }
 
     private static List<string> GetPageTemplateLines(WebSite website)
