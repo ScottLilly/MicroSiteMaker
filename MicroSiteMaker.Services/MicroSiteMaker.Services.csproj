@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImageResizer" Version="4.2.8" />
     <PackageReference Include="Markdig" Version="0.28.1" />
   </ItemGroup>
 
@@ -46,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MicroSiteMaker.Core\MicroSiteMaker.Core.csproj" />
     <ProjectReference Include="..\MicroSiteMaker.Models\MicroSiteMaker.Models.csproj" />
   </ItemGroup>
 

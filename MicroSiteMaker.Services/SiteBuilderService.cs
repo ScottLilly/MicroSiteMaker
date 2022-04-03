@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Drawing;
+using System.Reflection;
 using Markdig;
+using MicroSiteMaker.Core;
 using MicroSiteMaker.Models;
 
 namespace MicroSiteMaker.Services;
@@ -55,7 +57,7 @@ public static class SiteBuilderService
         foreach (FileInfo fileInfo in Directory.GetFiles(webSite.InputImagesDirectory)
                      .Select(f => new FileInfo(f)))
         {
-            File.Copy(fileInfo.FullName, Path.Combine(webSite.OutputImagesDirectory, fileInfo.Name));
+            CompressAndCopyImage(fileInfo.FullName, 75, Path.Combine(webSite.OutputImagesDirectory, fileInfo.Name));
         }
     }
 
@@ -100,6 +102,9 @@ public static class SiteBuilderService
             .Replace("{{date-date}}", DateTime.Now.Day.ToString())
             .Replace("{{date-dow}}", DateTime.Now.DayOfWeek.ToString());
     }
+
+    private static void CompressAndCopyImage(string originalFilePath, long quality, string outputFilePath) =>
+        Image.FromFile(originalFilePath).SaveJpeg(outputFilePath, quality);
 
     private static List<string> GetPageTemplateLines(WebSite website)
     {
