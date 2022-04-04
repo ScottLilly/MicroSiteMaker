@@ -64,7 +64,7 @@ public static class SiteBuilderService
         foreach (FileInfo fileInfo in Directory.GetFiles(website.InputImagesDirectory)
                      .Select(f => new FileInfo(f)))
         {
-            CompressAndCopyImage(fileInfo.FullName, 75, Path.Combine(website.OutputImagesDirectory, fileInfo.Name));
+            CompressAndCopyImage(fileInfo.FullName, 80, Path.Combine(website.OutputImagesDirectory, fileInfo.Name));
         }
     }
 
