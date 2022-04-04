@@ -18,7 +18,7 @@ internal class Program
 
         // Build the Website object and check for errors with the parameters.
         // Stop running if there are invalid, or missing required, parameters.
-        var website = new WebSite(argDictionary);
+        var website = new Website(argDictionary);
 
         if (website.HasErrors)
         {

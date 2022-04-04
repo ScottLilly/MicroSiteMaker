@@ -2,9 +2,10 @@
 
 namespace MicroSiteMaker.Models;
 
-public class WebSite
+public class Website
 {
     public ReadOnlyDictionary<string, string> Parameters { get; private set; }
+    public List<Page> Pages { get; } = new List<Page>();
 
     public string Name =>
         Parameters.GetValueOrDefault("--site") ?? "";
@@ -37,7 +38,7 @@ public class WebSite
     public string TemplateFileName =>
             Parameters.GetValueOrDefault("--template") ?? "page-template.html";
 
-    public WebSite(IDictionary<string, string> args)
+    public Website(IDictionary<string, string> args)
     {
         AssignArguments(args);
     }
