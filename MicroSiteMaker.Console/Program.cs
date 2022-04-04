@@ -30,6 +30,17 @@ internal class Program
             return;
         }
 
+        // Set values from parameters
+        if (website.Parameters.ContainsKey("--nocompress"))
+        {
+            SiteBuilderService.SetCompressImages(false);
+        }
+
+        if (website.Parameters.ContainsKey("--compresspercent"))
+        {
+            SiteBuilderService.SetCompressPercent(Convert.ToInt64(website.Parameters["--compresspercent"]));
+        }
+
         // Run commands
         if (website.Parameters.ContainsKey("--create"))
         {

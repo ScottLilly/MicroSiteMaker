@@ -8,6 +8,19 @@ namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
+    private static bool s_shouldCompressImages = true;
+    private static long s_compressPercent = 80;
+
+    public static void SetCompressImages(bool shouldCompress)
+    {
+        s_shouldCompressImages = shouldCompress;
+    }
+
+    public static void SetCompressPercent(long compressPercent)
+    {
+        s_compressPercent = compressPercent;
+    }
+
     public static void CreateInputDirectoriesAndDefaultFiles(Website website)
     {
         Directory.CreateDirectory(website.ProjectDirectory);
@@ -64,7 +77,16 @@ public static class SiteBuilderService
         foreach (FileInfo fileInfo in Directory.GetFiles(website.InputImagesDirectory)
                      .Select(f => new FileInfo(f)))
         {
-            CompressAndCopyImage(fileInfo.FullName, 80, Path.Combine(website.OutputImagesDirectory, fileInfo.Name));
+            var outputFileName = Path.Combine(website.OutputImagesDirectory, fileInfo.Name);
+
+            if (s_shouldCompressImages)
+            {
+                CompressAndCopyImage(fileInfo.FullName, s_compressPercent, outputFileName);
+            }
+            else
+            {
+                File.Copy(fileInfo.FullName, outputFileName);
+            }
         }
     }
 
