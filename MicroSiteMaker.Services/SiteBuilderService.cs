@@ -8,88 +8,97 @@ namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
-    public static void CreateInputDirectoriesAndDefaultFiles(WebSite webSite)
+    public static void CreateInputDirectoriesAndDefaultFiles(Website website)
     {
-        Directory.CreateDirectory(webSite.ProjectDirectory);
-        Directory.CreateDirectory(webSite.InputRootDirectory);
-        Directory.CreateDirectory(webSite.InputPagesDirectory);
-        Directory.CreateDirectory(webSite.InputTemplatesDirectory);
-        Directory.CreateDirectory(webSite.InputImagesDirectory);
+        Directory.CreateDirectory(website.ProjectDirectory);
+        Directory.CreateDirectory(website.InputRootDirectory);
+        Directory.CreateDirectory(website.InputPagesDirectory);
+        Directory.CreateDirectory(website.InputTemplatesDirectory);
+        Directory.CreateDirectory(website.InputImagesDirectory);
 
-        CreateFile(webSite.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
-        CreateFile(webSite.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate());
+        CreateFile(website.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
+        CreateFile(website.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate());
 
-        CreateFile(webSite.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown());
-        CreateFile(webSite.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyPageMarkdown());
-        CreateFile(webSite.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown());
+        CreateFile(website.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown());
+        CreateFile(website.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyPageMarkdown());
+        CreateFile(website.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown());
     }
 
-    public static void CreateOutputDirectoriesAndFiles(WebSite webSite)
+    public static void CreateOutputDirectoriesAndFiles(Website website)
     {
         // Delete existing folders and files
-        var rootDirectory = new DirectoryInfo(webSite.OutputRootDirectory);
+        var rootDirectory = new DirectoryInfo(website.OutputRootDirectory);
 
         if (rootDirectory.Exists)
         {
             rootDirectory.Delete(true);
         }
 
-        // Create the new folders and files
-        Directory.CreateDirectory(webSite.OutputRootDirectory);
-        Directory.CreateDirectory(webSite.OutputImagesDirectory);
-        Directory.CreateDirectory(webSite.OutputCssDirectory);
+        // Populate Website.Pages
+        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
+        {
+            website.Pages.Add(new Page(fileInfo, File.ReadAllLines(fileInfo.FullName)));
+        }
 
-        CopyCssFilesToOutputDirectory(webSite);
-        CopyImageFilesToOutputDirectory(webSite);
-        BuildPagesInOutputDirectory(webSite);
+        // Create the new folders and files
+        Directory.CreateDirectory(website.OutputRootDirectory);
+        Directory.CreateDirectory(website.OutputImagesDirectory);
+        Directory.CreateDirectory(website.OutputCssDirectory);
+
+        CopyCssFilesToOutputDirectory(website);
+        CopyImageFilesToOutputDirectory(website);
+        CreateOutputPageHtml(website);
+        WriteOutputFiles(website);
     }
 
-    private static void CopyCssFilesToOutputDirectory(WebSite webSite)
+    private static void CopyCssFilesToOutputDirectory(Website website)
     {
-        foreach (FileInfo fileInfo in GetFilesWithExtension(webSite.InputTemplatesDirectory, "css"))
+        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputTemplatesDirectory, "css"))
         {
-            File.Copy(fileInfo.FullName, Path.Combine(webSite.OutputCssDirectory, fileInfo.Name));
+            File.Copy(fileInfo.FullName, Path.Combine(website.OutputCssDirectory, fileInfo.Name));
         }
     }
 
-    private static void CopyImageFilesToOutputDirectory(WebSite webSite)
+    private static void CopyImageFilesToOutputDirectory(Website website)
     {
-        foreach (FileInfo fileInfo in Directory.GetFiles(webSite.InputImagesDirectory)
+        foreach (FileInfo fileInfo in Directory.GetFiles(website.InputImagesDirectory)
                      .Select(f => new FileInfo(f)))
         {
-            CompressAndCopyImage(fileInfo.FullName, 75, Path.Combine(webSite.OutputImagesDirectory, fileInfo.Name));
+            CompressAndCopyImage(fileInfo.FullName, 75, Path.Combine(website.OutputImagesDirectory, fileInfo.Name));
         }
     }
 
-    private static void BuildPagesInOutputDirectory(WebSite website)
+    private static void CreateOutputPageHtml(Website website)
     {
         var templateLines = GetPageTemplateLines(website);
 
-        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
+        foreach (Page page in website.Pages)
         {
-            var outputLines = new List<string>();
-
             foreach (string templateLine in templateLines)
             {
                 if (templateLine.StartsWith("{{page-content}}"))
                 {
-                    var inputLines = File.ReadAllLines(fileInfo.FullName);
-
-                    foreach (string inputLine in inputLines)
+                    foreach (string inputLine in page.InputFileLines)
                     {
-                        outputLines.Add(Markdown.ToHtml(ReplacedText(inputLine)));
+                        page.OutputLines.Add(Markdown.ToHtml(ReplacedText(inputLine)));
                     }
                 }
                 else
                 {
-                    outputLines.Add(
+                    page.OutputLines.Add(
                         ReplacedText(templateLine)
-                            .Replace("{{page-name}}", Path.GetFileNameWithoutExtension(fileInfo.Name)));
+                            .Replace("{{page-name}}", page.FileNameWithoutExtension));
                 }
             }
+        }
+    }
 
+    private static void WriteOutputFiles(Website website)
+    {
+        foreach (Page page in website.Pages)
+        {
             CreateFile(website.OutputRootDirectory,
-                $"{MarkdownFileNameToHtmlFileName(fileInfo.Name)}", outputLines);
+                $"{MarkdownFileNameToHtmlFileName(page.FileName)}", page.OutputLines);
         }
     }
 
@@ -106,7 +115,7 @@ public static class SiteBuilderService
     private static void CompressAndCopyImage(string originalFilePath, long quality, string outputFilePath) =>
         Image.FromFile(originalFilePath).SaveJpeg(outputFilePath, quality);
 
-    private static List<string> GetPageTemplateLines(WebSite website)
+    private static List<string> GetPageTemplateLines(Website website)
     {
         return File.ReadAllLines(Path.Combine(website.InputTemplatesDirectory, website.TemplateFileName))
             .Select(line => line
