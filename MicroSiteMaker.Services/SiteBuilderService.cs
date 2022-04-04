@@ -2,7 +2,6 @@
 using System.Drawing.Imaging;
 using System.Reflection;
 using Markdig;
-using MicroSiteMaker.Core;
 using MicroSiteMaker.Models;
 
 namespace MicroSiteMaker.Services;
