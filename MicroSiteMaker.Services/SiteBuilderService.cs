@@ -37,7 +37,7 @@ public static class SiteBuilderService
         // Populate Website.Pages
         foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
         {
-            website.Pages.Add(new Page(fileInfo, File.ReadAllLines(fileInfo.FullName)));
+            website.Pages.Add(new Page(fileInfo));
         }
 
         // Create the new folders and files
