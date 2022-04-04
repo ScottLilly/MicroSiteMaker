@@ -138,8 +138,8 @@ public static class SiteBuilderService
                 else
                 {
                     page.OutputLines.Add(
-                        ReplacedText(templateLine)
-                            .Replace("{{page-name}}", page.FileNameWithoutExtension));
+                        Markdown.ToHtml(ReplacedText(templateLine)
+                            .Replace("{{page-name}}", page.FileNameWithoutExtension)));
                 }
             }
         }
