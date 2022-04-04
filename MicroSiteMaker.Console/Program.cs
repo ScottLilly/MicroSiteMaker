@@ -41,6 +41,11 @@ internal class Program
             SiteBuilderService.SetCompressPercent(Convert.ToInt64(website.Parameters["--compresspercent"]));
         }
 
+        if (website.Parameters.ContainsKey("--maximagewidth"))
+        {
+            SiteBuilderService.SetMaxImageWidth(Convert.ToInt32(website.Parameters["--maximagewidth"]));
+        }
+
         // Run commands
         if (website.Parameters.ContainsKey("--create"))
         {

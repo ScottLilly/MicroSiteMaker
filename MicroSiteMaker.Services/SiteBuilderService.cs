@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.Reflection;
 using Markdig;
 using MicroSiteMaker.Core;
@@ -10,6 +11,7 @@ public static class SiteBuilderService
 {
     private static bool s_shouldCompressImages = true;
     private static long s_compressPercent = 80;
+    private static int s_maxImageWidth = -1;
 
     public static void SetCompressImages(bool shouldCompress)
     {
@@ -19,6 +21,11 @@ public static class SiteBuilderService
     public static void SetCompressPercent(long compressPercent)
     {
         s_compressPercent = compressPercent;
+    }
+
+    public static void SetMaxImageWidth(int maxImageWidth)
+    {
+        s_maxImageWidth = maxImageWidth;
     }
 
     public static void CreateInputDirectoriesAndDefaultFiles(Website website)
@@ -79,15 +86,39 @@ public static class SiteBuilderService
         {
             var outputFileName = Path.Combine(website.OutputImagesDirectory, fileInfo.Name);
 
-            if (s_shouldCompressImages)
+            var image = Image.FromFile(fileInfo.FullName);
+            var encoderParameters = new EncoderParameters(1);
+            encoderParameters.Param[0] =
+                new EncoderParameter(Encoder.Quality, s_shouldCompressImages ? s_compressPercent : 100L);
+
+            if (s_maxImageWidth != -1 && image.Width > s_maxImageWidth)
             {
-                CompressAndCopyImage(fileInfo.FullName, s_compressPercent, outputFileName);
+                ShrinkImageAndCopyToOutput(image, fileInfo.FullName, outputFileName, encoderParameters);
             }
             else
             {
-                File.Copy(fileInfo.FullName, outputFileName);
+                if (s_shouldCompressImages)
+                {
+                    image.Save(outputFileName, GetEncoder(ImageFormat.Jpeg), encoderParameters);
+                }
+                else
+                {
+                    File.Copy(fileInfo.FullName, outputFileName);
+                }
             }
         }
+    }
+
+    private static void ShrinkImageAndCopyToOutput(Image bmp, string inputFileName, string outputFileName,
+        EncoderParameters encoderParameters)
+    {
+        double scale = Convert.ToDouble(s_maxImageWidth) / Convert.ToDouble(bmp.Width);
+
+        Size newSize = new Size(Convert.ToInt32(bmp.Width * scale), Convert.ToInt32(bmp.Height * scale));
+
+        var bitmap = new Bitmap(Image.FromFile(inputFileName), newSize);
+
+        bitmap.Save(outputFileName, GetEncoder(ImageFormat.Jpeg), encoderParameters);
     }
 
     private static void CreateOutputPageHtml(Website website)
@@ -139,9 +170,6 @@ public static class SiteBuilderService
             .Replace("{{date-dow}}", DateTime.Now.DayOfWeek.ToString());
     }
 
-    private static void CompressAndCopyImage(string originalFilePath, long quality, string outputFilePath) =>
-        Image.FromFile(originalFilePath).SaveJpeg(outputFilePath, quality);
-
     private static List<string> GetPageTemplateLines(Website website)
     {
         return File.ReadAllLines(Path.Combine(website.InputTemplatesDirectory, website.TemplateFileName))
@@ -178,6 +206,19 @@ public static class SiteBuilderService
         using StreamReader reader = new StreamReader(stream);
 
         return reader.ReadToEnd().Split(Environment.NewLine).ToList();
+    }
+
+    private static ImageCodecInfo GetEncoder(ImageFormat format)
+    {
+        foreach (var codec in ImageCodecInfo.GetImageDecoders())
+        {
+            if (codec.FormatID == format.Guid)
+            {
+                return codec;
+            }
+        }
+
+        return null;
     }
 
     #region Read resource files for default files
