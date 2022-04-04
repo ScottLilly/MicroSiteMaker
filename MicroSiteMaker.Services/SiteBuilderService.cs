@@ -97,9 +97,14 @@ public static class SiteBuilderService
     {
         foreach (Page page in website.Pages)
         {
-            CreateFile(website.OutputRootDirectory,
-                $"{MarkdownFileNameToHtmlFileName(page.FileName)}", page.OutputLines);
+            var htmlFileName = MarkdownFileNameToHtmlFileName(page.FileName);
+
+            CreateFile(website.OutputRootDirectory, $"{htmlFileName}", page.OutputLines);
+
+            Console.WriteLine($"Created: {htmlFileName}");
         }
+
+        Console.WriteLine($"Total HTML files created: {website.Pages.Count}");
     }
 
     private static string ReplacedText(string rawText)
