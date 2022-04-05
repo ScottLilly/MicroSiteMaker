@@ -54,9 +54,11 @@ public static class SiteBuilderService
             .Replace("{{date-date}}", DateTime.Now.Day.ToString())
             .Replace("{{date-dow}}", DateTime.Now.DayOfWeek.ToString());
 
-        cleanedLine = MakeExternalLinksOpenInNewTab(cleanedLine, website.Name);
+        var htmlLine = Markdown.ToHtml(cleanedLine);
 
-        return Markdown.ToHtml(cleanedLine);
+        htmlLine = MakeExternalLinksOpenInNewTab(htmlLine, website.Name);
+
+        return htmlLine;
     }
 
     private static string MakeExternalLinksOpenInNewTab(string htmlLine, string websiteName)
@@ -73,11 +75,24 @@ public static class SiteBuilderService
         {
             var hrefText = regexMatch.Groups[1].Value;
 
-            if (!hrefText.Contains(websiteName, StringComparison.InvariantCultureIgnoreCase) &&
-                !hrefText.Contains(" target=", StringComparison.InvariantCultureIgnoreCase))
+            Console.WriteLine(hrefText);
+
+            if (hrefText.Contains("http", StringComparison.InvariantCultureIgnoreCase) &&
+                !hrefText.Contains(websiteName, StringComparison.InvariantCultureIgnoreCase))
             {
-                outputLine =
-                    outputLine.Replace(hrefText, hrefText.Replace(">", " target=\"_blank\">"));
+                var newHrefText = hrefText;
+
+                if (!newHrefText.Contains(" target=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    newHrefText = newHrefText.Replace(">", " target=\"_blank\">");
+                }
+
+                if (!newHrefText.Contains(" rel=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    newHrefText = newHrefText.Replace(">", " rel=\"nofollow\">");
+                }
+
+                outputLine = outputLine.Replace(hrefText, newHrefText);
             }
 
             regexMatch = regexMatch.NextMatch();
