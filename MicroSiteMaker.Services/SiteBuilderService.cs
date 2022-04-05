@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Markdig;
 using MicroSiteMaker.Models;
 
@@ -132,17 +133,51 @@ public static class SiteBuilderService
                 {
                     foreach (string inputLine in page.InputFileLines)
                     {
-                        page.OutputLines.Add(Markdown.ToHtml(ReplacedText(inputLine)));
+                        var html = Markdown.ToHtml(ReplacedText(inputLine));
+
+                        html = MakeExternalLinksOpenInNewTab(html, website.Name);
+
+                        page.OutputLines.Add(html);
                     }
                 }
                 else
                 {
-                    page.OutputLines.Add(
-                        Markdown.ToHtml(ReplacedText(templateLine)
-                            .Replace("{{page-name}}", page.FileNameWithoutExtension)));
+                    var html = Markdown.ToHtml(ReplacedText(templateLine)
+                        .Replace("{{page-name}}", page.FileNameWithoutExtension));
+
+                    html = MakeExternalLinksOpenInNewTab(html, website.Name);
+
+                    page.OutputLines.Add(html);
                 }
             }
         }
+    }
+
+    private static string MakeExternalLinksOpenInNewTab(string htmlLine, string websiteName)
+    {
+        string hrefPattern = @"(<a href.*?>)";
+
+        Match regexMatch = Regex.Match(htmlLine, hrefPattern,
+            RegexOptions.IgnoreCase | RegexOptions.Compiled,
+            TimeSpan.FromSeconds(1));
+
+        string outputLine = htmlLine;
+
+        while (regexMatch.Success)
+        {
+            var hrefText = regexMatch.Groups[1].Value;
+
+            if (!hrefText.Contains(websiteName, StringComparison.InvariantCultureIgnoreCase) &&
+                !hrefText.Contains(" target=", StringComparison.InvariantCultureIgnoreCase))
+            {
+                outputLine =
+                    outputLine.Replace(hrefText, hrefText.Replace(">", " target=\"_blank\">"));
+            }
+
+            regexMatch = regexMatch.NextMatch();
+        }
+
+        return outputLine;
     }
 
     private static void WriteOutputFiles(Website website)
