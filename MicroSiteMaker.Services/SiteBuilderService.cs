@@ -75,8 +75,6 @@ public static class SiteBuilderService
         {
             var hrefText = regexMatch.Groups[1].Value;
 
-            Console.WriteLine(hrefText);
-
             if (hrefText.Contains("http", StringComparison.InvariantCultureIgnoreCase) &&
                 !hrefText.Contains(websiteName, StringComparison.InvariantCultureIgnoreCase))
             {

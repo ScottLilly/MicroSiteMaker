@@ -72,7 +72,7 @@ public static class FileService
 
     public static void CopyCssFilesToOutputDirectory(Website website)
     {
-        foreach (FileInfo fileInfo in FileService.GetFilesWithExtension(website.InputTemplatesDirectory, "css"))
+        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputTemplatesDirectory, "css"))
         {
             File.Copy(fileInfo.FullName, Path.Combine(website.OutputCssDirectory, fileInfo.Name));
         }
@@ -112,7 +112,7 @@ public static class FileService
     {
         foreach (Page page in website.Pages)
         {
-            FileService.CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
+            CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
 
             Console.WriteLine($"Created: {page.HtmlFileName}");
         }
@@ -122,7 +122,9 @@ public static class FileService
 
     private static void CreateFile(string path, string filename, IEnumerable<string> contents)
     {
-        File.WriteAllLines(Path.Combine(path, filename), contents);
+        var nonEmptyLines = contents.Select(c => c.ReplaceLineEndings("")).Where(c => c.Length > 0).ToList();
+
+        File.WriteAllLines(Path.Combine(path, filename), nonEmptyLines);
     }
 
     private static List<FileInfo> GetFilesWithExtension(string path, string extension) =>

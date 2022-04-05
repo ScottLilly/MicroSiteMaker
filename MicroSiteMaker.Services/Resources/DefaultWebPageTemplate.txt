@@ -10,8 +10,7 @@
 <div class="footer">
 <hr/>
 Copyright &copy; {{date-year}}, [{{website-name}}](https://{{website-name}})
-</div
+</div>
 </div>
 </body>
 </html>
-
