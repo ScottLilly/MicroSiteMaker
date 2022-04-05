@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href=".\css\{{stylesheet-name}}" media="screen">
 </head>
-<body class="content">
+<body>
+<div class="content">
 {{page-content}}
+<div class="footer">
+<hr/>
+Copyright &copy; {{date-year}}, [{{website-name}}](https://{{website-name}})
+</div
+</div>
 </body>
 </html>
+

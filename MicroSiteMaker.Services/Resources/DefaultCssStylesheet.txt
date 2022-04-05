@@ -1,17 +1,28 @@
 ﻿body {
 	font-family: Arial, Helvetica, sans-serif;
+	background-color: #d8d8d8;
+	max-width: 800px;
+	margin: auto;
+	margin-top: 10px;
 }
 h1 {
-   text-align: center;
-   color: #0000b8;
+	font-size: 1.75em;
+	text-align: center;
+	color: #0000b8;
 }
 h2,
 h3 {
-   text-align: center;
-   color: #0000b8;
-   padding-top: 25px;
+	color: #0000b8;
+	padding-top: 25px;
+}
+img {
+	float: right
 }
 .content {
-  max-width: 600px;
-  margin: auto;
+	background-color: FFFFFF;
+	font-size: 12pt;
+	padding: 10px;
+}
+.footer {
+	font-size: 9pt;
 }
