@@ -33,23 +33,23 @@ internal class Program
         // Set values from parameters
         if (website.Parameters.ContainsKey("--nocompress"))
         {
-            SiteBuilderService.SetCompressImages(false);
+            FileService.SetCompressImages(false);
         }
 
         if (website.Parameters.ContainsKey("--compresspercent"))
         {
-            SiteBuilderService.SetCompressPercent(Convert.ToInt64(website.Parameters["--compresspercent"]));
+            FileService.SetCompressPercent(Convert.ToInt64(website.Parameters["--compresspercent"]));
         }
 
         if (website.Parameters.ContainsKey("--maximagewidth"))
         {
-            SiteBuilderService.SetMaxImageWidth(Convert.ToInt32(website.Parameters["--maximagewidth"]));
+            FileService.SetMaxImageWidth(Convert.ToInt32(website.Parameters["--maximagewidth"]));
         }
 
         // Run commands
         if (website.Parameters.ContainsKey("--create"))
         {
-            SiteBuilderService.CreateInputDirectoriesAndDefaultFiles(website);
+            FileService.CreateInputDirectoriesAndDefaultFiles(website);
         }
 
         if (website.Parameters.ContainsKey("--build"))

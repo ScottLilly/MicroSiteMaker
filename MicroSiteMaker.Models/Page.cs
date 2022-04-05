@@ -8,12 +8,16 @@ public class Page
 
     private readonly FileInfo _fileInfo;
 
-    public string FullName => _fileInfo.FullName;
-    public string FileName => _fileInfo.Name;
-    public string FileNameWithoutExtension => Path.GetFileNameWithoutExtension(_fileInfo.Name);
     public List<string> InputFileLines { get; } = new List<string>();
     public List<string> OutputLines { get; } = new List<string>();
     public List<string> Categories { get; } = new List<string>();
+
+    public string FullName => _fileInfo.FullName;
+    public string FileName => _fileInfo.Name;
+    public string FileNameWithoutExtension =>
+        Path.GetFileNameWithoutExtension(_fileInfo.Name);
+    public string HtmlFileName =>
+        FileName.ToLowerInvariant().Replace("  ", " ").Replace(" ", "-").Replace(".md", ".html");
 
     public Page(FileInfo fileInfo)
     {
