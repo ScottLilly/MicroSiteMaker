@@ -33,6 +33,7 @@ public static class FileService
         Directory.CreateDirectory(website.InputPagesDirectory);
         Directory.CreateDirectory(website.InputTemplatesDirectory);
         Directory.CreateDirectory(website.InputImagesDirectory);
+        Console.WriteLine("Created input directories");
 
         CreateFile(website.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
         CreateFile(website.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate());
@@ -115,8 +116,6 @@ public static class FileService
         foreach (Page page in website.Pages)
         {
             CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
-
-            Console.WriteLine($"Created: {page.HtmlFileName}");
         }
 
         Console.WriteLine($"Total HTML files created: {website.Pages.Count}");
@@ -127,6 +126,8 @@ public static class FileService
         var nonEmptyLines = contents.Select(c => c.ReplaceLineEndings("")).Where(c => c.Length > 0).ToList();
 
         File.WriteAllLines(Path.Combine(path, filename), nonEmptyLines);
+
+        Console.WriteLine($"Created: {Path.Combine(path, filename)}");
     }
 
     private static List<FileInfo> GetFilesWithExtension(string path, string extension) =>
