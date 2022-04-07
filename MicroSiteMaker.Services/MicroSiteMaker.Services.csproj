@@ -10,6 +10,7 @@
     <None Remove="Resources\DefaultAboutPageMarkdown.txt" />
     <None Remove="Resources\DefaultContactPageMarkdown.txt" />
     <None Remove="Resources\DefaultCssStylesheet.txt" />
+    <None Remove="Resources\DefaultIndexPageMarkdown.txt" />
     <None Remove="Resources\DefaultPrivacyPolicyPageMarkdown.txt" />
     <None Remove="Resources\DefaultWebPageTemplate.txt" />
   </ItemGroup>
@@ -24,6 +25,7 @@
     <EmbeddedResource Include="Resources\DefaultCssStylesheet.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultIndexPageMarkdown.txt" />
     <EmbeddedResource Include="Resources\DefaultPrivacyPolicyPageMarkdown.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
