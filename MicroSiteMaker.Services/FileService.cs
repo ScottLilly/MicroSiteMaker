@@ -37,6 +37,7 @@ public static class FileService
         CreateFile(website.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
         CreateFile(website.InputTemplatesDirectory, "page-template.html", DefaultWebPageTemplate());
 
+        CreateFile(website.InputPagesDirectory, "index.md", DefaultIndexPageMarkdown());
         CreateFile(website.InputPagesDirectory, "about.md", DefaultAboutPageMarkdown());
         CreateFile(website.InputPagesDirectory, "privacy-policy.md", DefaultPrivacyPolicyPageMarkdown());
         CreateFile(website.InputPagesDirectory, "contact.md", DefaultContactPageMarkdown());
@@ -138,6 +139,9 @@ public static class FileService
 
     private static IEnumerable<string> DefaultWebPageTemplate() =>
         GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultWebPageTemplate.txt");
+
+    private static IEnumerable<string> DefaultIndexPageMarkdown() =>
+        GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultIndexPageMarkdown.txt");
 
     private static IEnumerable<string> DefaultAboutPageMarkdown() =>
         GetLinesFromResource("MicroSiteMaker.Services.Resources.DefaultAboutPageMarkdown.txt");
