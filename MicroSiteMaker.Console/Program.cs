@@ -31,6 +31,16 @@ internal class Program
         }
 
         // Set values from parameters
+        if (website.Parameters.ContainsKey("--nofollow"))
+        {
+            SiteBuilderService.SetFollow(false);
+        }
+
+        if (website.Parameters.ContainsKey("--noindex"))
+        {
+            SiteBuilderService.SetIndex(false);
+        }
+        
         if (website.Parameters.ContainsKey("--nocompress"))
         {
             FileService.SetCompressImages(false);

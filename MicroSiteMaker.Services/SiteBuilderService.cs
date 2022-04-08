@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.Design;
+using System.Text.RegularExpressions;
 using Markdig;
 using MicroSiteMaker.Models;
 
@@ -6,6 +7,19 @@ namespace MicroSiteMaker.Services;
 
 public static class SiteBuilderService
 {
+    private static bool s_follow = true;
+    private static bool s_index = true;
+
+    public static void SetFollow(bool follow)
+    {
+        s_follow = follow;
+    }
+
+    public static void SetIndex(bool index)
+    {
+        s_index = index;
+    }
+
     public static void CreateOutputDirectoriesAndFiles(Website website)
     {
         FileService.PopulateWebsiteInputFiles(website);
@@ -38,6 +52,30 @@ public static class SiteBuilderService
                 {
                     page.OutputLines.Add(GetCleanedHtmlLine(website, page, templateLine));
                 }
+            }
+
+            // Build robots tag from parameters
+            string followText = s_follow ? "follow" : "nofollow";
+            string indexText = s_index ? "index" : "noindex";
+            string robotsTag = $"<meta name=\"robots\" content=\"{followText}, {indexText}\">";
+
+            // Check if OutputLines already has robots tag
+            var robotsLine =
+                page.OutputLines.FirstOrDefault(line => line.Contains("meta ") && line.Contains("robots"));
+
+            // If so, replace. Otherwise, add it
+            if(robotsLine == null)
+            {
+                var closeHeadLine =
+                    page.OutputLines.First(line => line.Trim().StartsWith("</head"));
+                var closeHeadIndex =
+                    page.OutputLines.IndexOf(closeHeadLine);
+
+                page.OutputLines.Insert(closeHeadIndex, robotsTag);
+            }
+            else
+            {
+                page.OutputLines[page.OutputLines.IndexOf(robotsLine)] = robotsTag;
             }
         }
     }
