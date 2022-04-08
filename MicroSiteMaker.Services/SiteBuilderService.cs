@@ -86,6 +86,7 @@ public static class SiteBuilderService
             .Replace("{{website-name}}", website.Name)
             .Replace("{{page-name}}", page.FileNameWithoutExtension)
             .Replace("{{stylesheet-name}}", website.CssFileName)
+            .Replace("{{file-date}}", page.FileDateTime.ToString("dd MMMM yyyy"))
             .Replace("{{date-year}}", DateTime.Now.Year.ToString())
             .Replace("{{date-month}}", DateTime.Now.Month.ToString())
             .Replace("{{date-month-name}}", DateTime.Now.ToString("MMMM"))

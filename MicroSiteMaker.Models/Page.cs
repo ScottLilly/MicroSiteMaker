@@ -16,6 +16,8 @@ public class Page
     public string FileName => _fileInfo.Name;
     public string FileNameWithoutExtension =>
         Path.GetFileNameWithoutExtension(_fileInfo.Name);
+
+    public DateTime FileDateTime => _fileInfo.CreationTime;
     public string HtmlFileName =>
         FileName.ToLowerInvariant().Replace("  ", " ").Replace(" ", "-").Replace(".md", ".html");
 
