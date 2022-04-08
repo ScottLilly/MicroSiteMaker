@@ -57,14 +57,26 @@ internal class Program
         }
 
         // Run commands
-        if (website.Parameters.ContainsKey("--create"))
+        if (website.Parameters.ContainsKey("--create") ||
+            (!website.Parameters.ContainsKey("--create") &&
+             !website.Parameters.ContainsKey("--build")))
         {
             FileService.CreateInputDirectoriesAndDefaultFiles(website);
         }
 
         if (website.Parameters.ContainsKey("--build"))
         {
-            SiteBuilderService.CreateOutputDirectoriesAndFiles(website);
+            if (!Directory.Exists(website.InputRootDirectory) ||
+                !Directory.Exists(website.InputTemplatesDirectory) ||
+                !Directory.Exists(website.InputPagesDirectory) ||
+                !Directory.Exists(website.InputImagesDirectory))
+            {
+                System.Console.WriteLine("You must run MicroSiteMaker with '--create' parameter and add/edit input markdown files");
+            }
+            else
+            {
+                SiteBuilderService.CreateOutputDirectoriesAndFiles(website);
+            }
         }
     }
 }
