@@ -143,6 +143,18 @@ public static class FileService
         CreateFile(website.OutputRootDirectory, "sitemap.xml", lines);
     }
 
+    public static void CreateRobotsTextFile(Website website)
+    {
+        List<string> lines = new List<string>();
+
+        lines.Add("# Allow all crawlers to scan all HTML pages");
+        lines.Add("User-agent: *");
+        lines.Add("Disallow: /css/");
+        lines.Add("Disallow: /images/");
+
+        CreateFile(website.OutputRootDirectory, "robots.txt", lines);
+    }
+
     private static void CreateFile(string path, string filename, IEnumerable<string> contents)
     {
         var nonEmptyLines = contents.Select(c => c.ReplaceLineEndings("")).Where(c => c.Length > 0).ToList();

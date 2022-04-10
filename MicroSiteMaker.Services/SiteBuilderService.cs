@@ -32,6 +32,7 @@ public static class SiteBuilderService
         CreateOutputPageHtml(website);
         FileService.WriteOutputFiles(website);
         FileService.CreateSitemapFile(website);
+        FileService.CreateRobotsTextFile(website);
     }
 
     private static void CreateOutputPageHtml(Website website)
