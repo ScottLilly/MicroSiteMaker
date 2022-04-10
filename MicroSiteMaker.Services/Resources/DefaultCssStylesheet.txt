@@ -22,8 +22,9 @@ p {
 	clear: right;
 }
 .content {
-	background-color: FFFFFF;
+	background-color: #FFFFFF;
 	font-size: 12pt;
+	font-weight: bold;
 	padding: 10px;
     border-radius: 15px;
 }
@@ -35,7 +36,7 @@ div.menu ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #4E5F6B;
+  background-color: #002D72;
 }
 
 div.menu li {
@@ -52,20 +53,20 @@ div.menu li {
 }
 
 .dropdown:hover .dropbtn {
-  background-color: #0038D3;
+  background-color: #0059B2;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f9f9f9;
+  background-color: #0050A0;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
 
 .dropdown-content a {
-  color: black;
+  color: white;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -73,7 +74,7 @@ div.menu li {
 }
 
 .dropdown-content a:hover {
-	background-color: #B7B7B7;
+	background-color: #418FDE;
 }
 
 .dropdown:hover .dropdown-content {

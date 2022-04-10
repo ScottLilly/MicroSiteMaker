@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using System.Text;
 using MicroSiteMaker.Models;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace MicroSiteMaker.Services;
 
@@ -119,6 +121,26 @@ public static class FileService
         }
 
         Console.WriteLine($"Total HTML files created: {website.Pages.Count}");
+    }
+
+    public static void CreateSitemapFile(Website website)
+    {
+        List<string> lines = new List<string>();
+
+        lines.Add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        lines.Add("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+
+        foreach (Page page in website.Pages)
+        {
+            lines.Add("   <url>");
+            lines.Add($"      <loc>{page.HtmlFileName}</loc>");
+            lines.Add($"      <lastmod>{page.FileDateTime.ToString("yyyy-MM-dd")}</lastmod>");
+            lines.Add("   </url>");
+        }
+
+        lines.Add("</urlset>");
+
+        CreateFile(website.OutputRootDirectory, "sitemap.xml", lines);
     }
 
     private static void CreateFile(string path, string filename, IEnumerable<string> contents)
