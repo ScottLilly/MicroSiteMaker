@@ -134,7 +134,7 @@ public static class FileService
         {
             lines.Add("   <url>");
             lines.Add($"      <loc>{page.HtmlFileName}</loc>");
-            lines.Add($"      <lastmod>{page.FileDateTime.ToString("yyyy-MM-dd")}</lastmod>");
+            lines.Add($"      <lastmod>{page.FileDateTime:yyyy-MM-dd}</lastmod>");
             lines.Add("   </url>");
         }
 
