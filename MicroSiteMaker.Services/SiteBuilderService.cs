@@ -86,7 +86,7 @@ public static class SiteBuilderService
     {
         var cleanedLine = line
             .Replace("{{website-name}}", website.Name)
-            .Replace("{{page-name}}", page.FileNameWithoutExtension)
+            .Replace("{{page-name}}", page.Title)
             .Replace("{{stylesheet-name}}", website.CssFileName)
             .Replace("{{file-date}}", page.FileDateTime.ToString("dd MMMM yyyy"))
             .Replace("{{date-year}}", DateTime.Now.Year.ToString())

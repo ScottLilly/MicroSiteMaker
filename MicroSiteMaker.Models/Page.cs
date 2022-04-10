@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using MicroSiteMaker.Core;
 
 namespace MicroSiteMaker.Models;
 
@@ -16,6 +17,8 @@ public class Page
     public string FileName => _fileInfo.Name;
     public string FileNameWithoutExtension =>
         Path.GetFileNameWithoutExtension(_fileInfo.Name);
+    public string Title =>
+        FileNameWithoutExtension.ToProperCase();
 
     public DateTime FileDateTime => _fileInfo.CreationTime;
     public string HtmlFileName =>
