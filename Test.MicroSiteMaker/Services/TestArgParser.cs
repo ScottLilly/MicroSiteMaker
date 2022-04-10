@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Test.MicroSiteMaker.Services;
 
-public class TestArgParser
+public class TestExtensionMethods
 {
     [Fact]
     public void Test1()
