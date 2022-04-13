@@ -10,7 +10,8 @@ internal class Program
         var argDictionary = ArgParser.GetArgumentDictionary(args);
 
         // If user passes in --help parameter, display help message and stop running
-        if (argDictionary.ContainsKey("--help"))
+        if (argDictionary.ContainsKey("--help") ||
+            argDictionary.ContainsKey("--h"))
         {
             ArgParser.DisplayHelp();
             return;
