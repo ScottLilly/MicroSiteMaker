@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
-using System.Text;
 using MicroSiteMaker.Models;
 using Encoder = System.Drawing.Imaging.Encoder;
 
@@ -67,7 +66,24 @@ public static class FileService
     {
         foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
         {
-            website.Pages.Add(new Page(fileInfo));
+            var page = new Page(fileInfo);
+            website.Pages.Add(page);
+
+            foreach (var category in page.Categories)
+            {
+                var categoryPage =
+                    website.CategoryPages.FirstOrDefault(cp =>
+                        (cp as CategoryPage).CategoryName.Equals(category));
+
+                if (categoryPage == null)
+                {
+                    categoryPage = new CategoryPage(category);
+
+                    website.CategoryPages.Add(categoryPage);
+                }
+
+                categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
+            }
         }
     }
 
@@ -115,7 +131,7 @@ public static class FileService
 
     public static void WriteOutputFiles(Website website)
     {
-        foreach (Page page in website.Pages)
+        foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
         {
             CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
         }

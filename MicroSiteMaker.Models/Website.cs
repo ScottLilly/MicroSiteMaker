@@ -5,7 +5,12 @@ namespace MicroSiteMaker.Models;
 public class Website
 {
     public ReadOnlyDictionary<string, string> Parameters { get; private set; }
-    public List<Page> Pages { get; } = new List<Page>();
+
+    public List<IHtmlPageSource> Pages { get; }
+    public List<IHtmlPageSource> CategoryPages { get; }
+
+    public List<IHtmlPageSource> PagesAndCategoryPages =>
+        Pages.Concat(CategoryPages).ToList();
 
     public string Name =>
         Parameters.GetValueOrDefault("--site") ?? "";
@@ -41,6 +46,9 @@ public class Website
     public Website(IDictionary<string, string> args)
     {
         AssignArguments(args);
+
+        Pages = new List<IHtmlPageSource>();
+        CategoryPages = new List<IHtmlPageSource>();
     }
 
     private void AssignArguments(IDictionary<string, string> args)
