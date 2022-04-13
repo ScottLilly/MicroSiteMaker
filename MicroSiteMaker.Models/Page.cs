@@ -3,7 +3,7 @@ using MicroSiteMaker.Core;
 
 namespace MicroSiteMaker.Models;
 
-public class Page
+public class Page : IHtmlPageSource
 {
     private const string REGEX_CATEGORIES = @"\{\{Categories:(.*?)\}\}";
 

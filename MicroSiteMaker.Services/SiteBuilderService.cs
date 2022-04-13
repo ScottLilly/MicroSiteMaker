@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Markdig;
 using MicroSiteMaker.Models;
 
@@ -39,7 +38,7 @@ public static class SiteBuilderService
     {
         var templateLines = FileService.GetPageTemplateLines(website);
 
-        foreach (Page page in website.Pages)
+        foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
         {
             foreach (string templateLine in templateLines)
             {
@@ -82,7 +81,7 @@ public static class SiteBuilderService
         }
     }
 
-    private static string GetCleanedHtmlLine(Website website, Page page, string line)
+    private static string GetCleanedHtmlLine(Website website, IHtmlPageSource page, string line)
     {
         var cleanedLine = line
             .Replace("{{website-name}}", website.Name)
