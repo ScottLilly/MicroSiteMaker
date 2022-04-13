@@ -11,7 +11,8 @@ internal class Program
 
         // If user passes in --help parameter, display help message and stop running
         if (argDictionary.ContainsKey("--help") ||
-            argDictionary.ContainsKey("--h"))
+            argDictionary.ContainsKey("--h") ||
+            argDictionary.Count == 0)
         {
             ArgParser.DisplayHelp();
             return;

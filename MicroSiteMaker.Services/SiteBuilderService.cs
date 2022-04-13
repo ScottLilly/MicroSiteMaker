@@ -84,7 +84,7 @@ public static class SiteBuilderService
     private static string GetCleanedHtmlLine(Website website, IHtmlPageSource page, string line)
     {
         var cleanedLine = line
-            .Replace("{{website-name}}", website.Name)
+            .Replace("{{website-name}}", website.Url)
             .Replace("{{page-name}}", page.Title)
             .Replace("{{stylesheet-name}}", website.CssFileName)
             .Replace("{{file-date}}", page.FileDateTime.ToString("dd MMMM yyyy"))
@@ -96,7 +96,7 @@ public static class SiteBuilderService
 
         var htmlLine = Markdown.ToHtml(cleanedLine);
 
-        htmlLine = MakeExternalLinksOpenInNewTab(htmlLine, website.Name);
+        htmlLine = MakeExternalLinksOpenInNewTab(htmlLine, website.Url);
 
         return htmlLine;
     }

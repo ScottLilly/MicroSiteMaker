@@ -12,8 +12,8 @@ public class Website
     public List<IHtmlPageSource> PagesAndCategoryPages =>
         Pages.Concat(CategoryPages).ToList();
 
-    public string Name =>
-        Parameters.GetValueOrDefault("--site") ?? "";
+    public string Url =>
+        Parameters.GetValueOrDefault("--url") ?? "";
     public string ProjectDirectory =>
         Parameters.GetValueOrDefault("--path") ?? "";
 
@@ -55,7 +55,7 @@ public class Website
     {
         Parameters = new ReadOnlyDictionary<string, string>(args);
 
-        if (string.IsNullOrWhiteSpace(Name))
+        if (string.IsNullOrWhiteSpace(Url))
         {
             ErrorMessages.Add("Parameter '--site' is required.");
         }
