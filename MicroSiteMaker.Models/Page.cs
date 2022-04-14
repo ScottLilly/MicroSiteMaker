@@ -5,7 +5,8 @@ namespace MicroSiteMaker.Models;
 
 public class Page : IHtmlPageSource
 {
-    private const string REGEX_CATEGORIES = @"\{\{Categories:(.*?)\}\}";
+    private const string REGEX_CATEGORIES = @"{{Categories:(.*?)}}";
+    private const string REGEX_META_TAG_DESCRIPTION = @"{{Meta-Description:(.*?)}}";
 
     private readonly FileInfo _fileInfo;
 
@@ -19,6 +20,7 @@ public class Page : IHtmlPageSource
         Path.GetFileNameWithoutExtension(_fileInfo.Name);
     public string Title =>
         FileNameWithoutExtension.ToProperCase();
+    public string MetaTagDescription { get; private set; }
 
     public DateTime FileDateTime => _fileInfo.CreationTime;
     public string HtmlFileName =>
@@ -36,12 +38,14 @@ public class Page : IHtmlPageSource
         foreach (string line in File.ReadAllLines(fileInfo.FullName))
         {
             MatchCollection categories = Regex.Matches(line, REGEX_CATEGORIES);
+            MatchCollection metaTagDescription = Regex.Matches(line, REGEX_META_TAG_DESCRIPTION);
 
-            if (categories.Count == 0)
+            if (categories.Count == 0 &&
+                metaTagDescription.Count == 0)
             {
                 InputFileLines.Add(line);
             }
-            else
+            else if (categories.Count > 0)
             {
                 foreach (Match match in categories)
                 {
@@ -49,6 +53,14 @@ public class Page : IHtmlPageSource
                     {
                         Categories.AddRange(match.Groups[1].Value.Split(","));
                     }
+                }
+            }
+            else if (metaTagDescription.Count > 0)
+            {
+                Match match = metaTagDescription.First();
+                if (match.Success && match.Groups.Count > 0)
+                {
+                    MetaTagDescription = match.Groups[1].Value;
                 }
             }
         }

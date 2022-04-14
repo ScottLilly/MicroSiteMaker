@@ -3,6 +3,7 @@
 public interface IHtmlPageSource
 {
     public string HtmlFileName { get; }
+    public string MetaTagDescription { get; }
     public List<string> InputFileLines { get; }
     public List<string> OutputLines { get; }
     public string Title { get; }
