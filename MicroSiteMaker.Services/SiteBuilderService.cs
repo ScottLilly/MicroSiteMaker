@@ -78,6 +78,16 @@ public static class SiteBuilderService
             {
                 page.OutputLines[page.OutputLines.IndexOf(robotsLine)] = robotsTag;
             }
+
+            if (!string.IsNullOrWhiteSpace(page.MetaTagDescription))
+            {
+                var closeHeadLine =
+                    page.OutputLines.First(line => line.Trim().StartsWith("</head"));
+                var closeHeadIndex =
+                    page.OutputLines.IndexOf(closeHeadLine);
+
+                page.OutputLines.Insert(closeHeadIndex, $"<meta name=\"description\" content=\"{page.MetaTagDescription}\">");
+            }
         }
     }
 

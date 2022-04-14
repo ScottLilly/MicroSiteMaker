@@ -9,6 +9,7 @@ public class CategoryPage : IHtmlPageSource
     public List<string> InputFileLines { get; }
     public List<string> OutputLines { get; }
     public string Title { get; }
+    public string MetaTagDescription { get; } = "";
     public DateTime FileDateTime { get; } = DateTime.MinValue;
 
     public CategoryPage(string categoryName)
