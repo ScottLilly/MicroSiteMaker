@@ -17,7 +17,7 @@ public class CategoryPage : IHtmlPageSource
         CategoryName = categoryName;
         Title = $"Category: {CategoryName.Replace("-", "").ToProperCase()}";
         HtmlFileName = $"category-{PageName(categoryName)}.html".Replace("--", "-");
-        InputFileLines = new List<string>();
+        InputFileLines = new List<string> {$"# Category: {categoryName}"};
         OutputLines = new List<string>();
     }
 
