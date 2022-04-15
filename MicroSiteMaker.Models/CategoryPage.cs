@@ -11,7 +11,7 @@ public class CategoryPage : IHtmlPageSource
     public List<string> OutputLines { get; }
     public string Title { get; }
     public string MetaTagDescription { get; } = "";
-    public DateTime FileDateTime { get; } = DateTime.MinValue;
+    public DateTime FileDateTime { get; } = DateTime.Now;
 
     public CategoryPage(string categoryName)
     {
@@ -22,6 +22,6 @@ public class CategoryPage : IHtmlPageSource
         OutputLines = new List<string>();
     }
 
-    private string PageName(string categoryName) =>
+    private static string PageName(string categoryName) =>
         categoryName.ToLowerInvariant().Replace("  ", " ").Replace(" ", "-");
 }

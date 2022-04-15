@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using MicroSiteMaker.Core;
 using MicroSiteMaker.Models;
 using Encoder = System.Drawing.Imaging.Encoder;
 
@@ -34,6 +35,7 @@ public static class FileService
         Directory.CreateDirectory(website.InputPagesDirectory);
         Directory.CreateDirectory(website.InputTemplatesDirectory);
         Directory.CreateDirectory(website.InputImagesDirectory);
+
         Console.WriteLine("Created input directories");
 
         CreateFile(website.InputTemplatesDirectory, "stylesheet.css", DefaultCssStylesheet());
@@ -64,49 +66,59 @@ public static class FileService
 
     public static void PopulateWebsiteInputFiles(Website website)
     {
-        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputPagesDirectory, "md"))
+        foreach (FileInfo fileInfo in FilesWithExtension(website.InputPagesDirectory, "md"))
         {
-            var page = new Page(fileInfo);
-            website.Pages.Add(page);
+            website.Pages.Add(new Page(fileInfo));
+        }
 
+        PopulateCategoryPages(website);
+        PopulatePagesByDatePage(website);
+    }
+
+    private static void PopulateCategoryPages(Website website)
+    {
+        foreach (Page page in website.Pages.OfType<Page>().Where(p => p.IncludeInCategories))
+        {
+            foreach (string category in page.Categories)
+            {
+                AddPageToCategoryPage(website, page, category);
+            }
+
+            // If this page doesn't have any Categories, assign it to Uncategorized
             if (page.Categories.Count == 0)
             {
-                var uncategorizedCategoryPage =
-                    website.CategoryPages.FirstOrDefault(cp =>
-                        (cp as CategoryPage).CategoryName.Equals("Uncategorized"));
-
-                uncategorizedCategoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
-            }
-            else
-            {
-                if (page.IncludeInCategories)
-                {
-                    foreach (var category in page.Categories)
-                    {
-                        var categoryPage =
-                            website.CategoryPages.FirstOrDefault(cp =>
-                                (cp as CategoryPage).CategoryName.Equals(category));
-
-                        if (categoryPage == null)
-                        {
-                            categoryPage = new CategoryPage(category);
-
-                            website.CategoryPages.Add(categoryPage);
-                        }
-
-                        categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
-                    }
-                }
+                AddPageToCategoryPage(website, page, Constants.SpecialCategories.UNCATEGORIZED);
             }
         }
+    }
 
-        foreach (IHtmlPageSource dateSortedPage in
+    private static void PopulatePagesByDatePage(Website website)
+    {
+        foreach (var page in
                  website.Pages.Where(p => p.IncludeInCategories)
-                     .OrderByDescending(p => p.FileDateTime).ThenBy(p => p.Title))
+                     .OrderByDescending(p => p.FileDateTime)
+                     .ThenBy(p => p.Title))
         {
-
-            website.PagesByDatePage.InputFileLines.Add($"[{dateSortedPage.Title}]({dateSortedPage.HtmlFileName}) {dateSortedPage.FileDateTime.ToShortDateString()}");
+            website.PagesByDatePage
+                .InputFileLines
+                .Add($"[{page.Title}]({page.HtmlFileName}) {page.FileDateTime.ToShortDateString()}");
         }
+    }
+
+    private static void AddPageToCategoryPage(Website website, IHtmlPageSource page, string category)
+    {
+        var categoryPage =
+            website.CategoryPages
+                .OfType<CategoryPage>()
+                .FirstOrDefault(cp => cp.CategoryName.Matches(category));
+
+        if (categoryPage == null)
+        {
+            categoryPage = new CategoryPage(category);
+            website.CategoryPages.Add(categoryPage);
+        }
+
+        categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
     }
 
     public static List<string> GetPageTemplateLines(Website website) =>
@@ -115,7 +127,7 @@ public static class FileService
 
     public static void CopyCssFilesToOutputDirectory(Website website)
     {
-        foreach (FileInfo fileInfo in GetFilesWithExtension(website.InputTemplatesDirectory, "css"))
+        foreach (FileInfo fileInfo in FilesWithExtension(website.InputTemplatesDirectory, "css"))
         {
             File.Copy(fileInfo.FullName, Path.Combine(website.OutputCssDirectory, fileInfo.Name));
         }
@@ -153,9 +165,9 @@ public static class FileService
 
     public static void WriteOutputFiles(Website website)
     {
-        foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
+        foreach (IHtmlPageSource page in website.AllPages)
         {
-            if (page is CategoryPage {CategoryName: "Uncategorized"})
+            if (page is CategoryPage {CategoryName: Constants.SpecialCategories.UNCATEGORIZED})
             {
                 // If "Uncategorized" Category page has no page links, do not create its html page
                 if (page.InputFileLines.Count > 1)
@@ -179,7 +191,7 @@ public static class FileService
         lines.Add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         lines.Add("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
 
-        foreach (Page page in website.Pages)
+        foreach (IHtmlPageSource page in website.Pages)
         {
             lines.Add("   <url>");
             lines.Add($"      <loc>{page.HtmlFileName}</loc>");
@@ -206,14 +218,17 @@ public static class FileService
 
     private static void CreateFile(string path, string filename, IEnumerable<string> contents)
     {
-        var nonEmptyLines = contents.Select(c => c.ReplaceLineEndings("")).Where(c => c.Length > 0).ToList();
+        var lines =
+            contents.Select(c => c.ReplaceLineEndings(""))
+                .Where(c => c.Length > 0)
+                .ToList();
 
-        File.WriteAllLines(Path.Combine(path, filename), nonEmptyLines);
+        File.WriteAllLines(Path.Combine(path, filename), lines);
 
         Console.WriteLine($"Created: {Path.Combine(path, filename)}");
     }
 
-    private static List<FileInfo> GetFilesWithExtension(string path, string extension) =>
+    private static List<FileInfo> FilesWithExtension(string path, string extension) =>
         Directory.GetFiles(path)
             .Select(f => new FileInfo(f))
             .Where(f => f.Name.EndsWith(extension, StringComparison.InvariantCultureIgnoreCase))

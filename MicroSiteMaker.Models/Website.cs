@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using MicroSiteMaker.Core;
 
 namespace MicroSiteMaker.Models;
 
@@ -10,39 +11,39 @@ public class Website
     public List<IHtmlPageSource> CategoryPages { get; }
     public IHtmlPageSource PagesByDatePage { get; }
 
-    public List<IHtmlPageSource> PagesAndCategoryPages =>
+    public List<IHtmlPageSource> AllPages =>
         Pages.Concat(CategoryPages.Concat(new List<IHtmlPageSource> {PagesByDatePage})).ToList();
 
     public string Url =>
-        Parameters.GetValueOrDefault("--url") ?? "";
+        Parameters.GetValueOrDefault(Constants.Parameters.URL) ?? "";
     public string ProjectDirectory =>
-        Parameters.GetValueOrDefault("--path") ?? "";
+        Parameters.GetValueOrDefault(Constants.Parameters.PATH) ?? "";
 
     public List<string> ErrorMessages { get; } =
         new List<string>();
     public bool HasErrors => ErrorMessages.Any();
 
     public string InputRootDirectory =>
-        Path.Combine(ProjectDirectory, "input");
+        Path.Combine(ProjectDirectory, Constants.Directories.Input.ROOT);
     public string InputPagesDirectory =>
-        Path.Combine(InputRootDirectory, "pages");
+        Path.Combine(InputRootDirectory, Constants.Directories.Input.PAGES);
     public string InputTemplatesDirectory =>
-        Path.Combine(InputRootDirectory, "templates");
+        Path.Combine(InputRootDirectory, Constants.Directories.Input.TEMPLATES);
     public string InputImagesDirectory =>
-        Path.Combine(InputRootDirectory, "images");
+        Path.Combine(InputRootDirectory, Constants.Directories.Input.IMAGES);
 
     public string OutputRootDirectory =>
-        Path.Combine(ProjectDirectory, "output");
+        Path.Combine(ProjectDirectory, Constants.Directories.Output.ROOT);
     public string OutputImagesDirectory =>
-        Path.Combine(OutputRootDirectory, "images");
+        Path.Combine(OutputRootDirectory, Constants.Directories.Output.IMAGES);
     public string OutputCssDirectory =>
-        Path.Combine(OutputRootDirectory, "css");
+        Path.Combine(OutputRootDirectory, Constants.Directories.Output.CSS);
 
     public string CssFileName =>
-        Parameters.GetValueOrDefault("--stylesheet") ?? "stylesheet.css";
+        Parameters.GetValueOrDefault(Constants.Parameters.STYLESHEET) ?? "stylesheet.css";
 
     public string TemplateFileName =>
-            Parameters.GetValueOrDefault("--template") ?? "page-template.html";
+            Parameters.GetValueOrDefault(Constants.Parameters.TEMPLATE) ?? "page-template.html";
 
     public Website(IDictionary<string, string> args)
     {
@@ -50,7 +51,7 @@ public class Website
 
         Pages = new List<IHtmlPageSource>();
         CategoryPages = new List<IHtmlPageSource>();
-        CategoryPages.Add(new CategoryPage("Uncategorized"));
+        CategoryPages.Add(new CategoryPage(Constants.SpecialCategories.UNCATEGORIZED));
         PagesByDatePage = new PageByDatePage();
         PagesByDatePage.InputFileLines.Add("# Pages by Date");
     }
@@ -61,12 +62,12 @@ public class Website
 
         if (string.IsNullOrWhiteSpace(Url))
         {
-            ErrorMessages.Add("Parameter '--site' is required.");
+            ErrorMessages.Add($"Parameter '{Constants.Parameters.URL}' is required.");
         }
 
         if (string.IsNullOrWhiteSpace(ProjectDirectory))
         {
-            ErrorMessages.Add("Parameter '--path' is required.");
+            ErrorMessages.Add($"Parameter '{Constants.Parameters.PATH}' is required.");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MicroSiteMaker.Services;
+﻿using MicroSiteMaker.Core;
+
+namespace MicroSiteMaker.Services;
 
 public static  class ArgParser
 {
@@ -36,19 +38,19 @@ public static  class ArgParser
     public static void DisplayHelp()
     {
         Console.WriteLine("Parameters (required)");
-        Console.WriteLine("  --url <URL of website>");
-        Console.WriteLine("  --path <root directory above input and output directories>");
+        Console.WriteLine($"  {Constants.Parameters.URL} <URL of website>");
+        Console.WriteLine($"  {Constants.Parameters.PATH} <root directory above input and output directories>");
         Console.WriteLine("");
         Console.WriteLine("Parameters (optional)");
-        Console.WriteLine("  --nofollow              Add \"nofollow\" to robots meta tag on all pages");
-        Console.WriteLine("  --noindex               Add \"noindex\" to robots meta tag on all pages");
-        Console.WriteLine("  --nocompress            Do not compress images by lowering quality");
-        Console.WriteLine("  --compresspercent <n>   Set the image quality compression percentage");
-        Console.WriteLine("  --maximagewidth <n>     Rescale images in output/images to have a maximum width of <n> pixels");
+        Console.WriteLine($"  {Constants.Parameters.NOFOLLOW}              Add \"nofollow\" to robots meta tag on all pages");
+        Console.WriteLine($"  {Constants.Parameters.NOINDEX}               Add \"noindex\" to robots meta tag on all pages");
+        Console.WriteLine($"  {Constants.Parameters.NOCOMPRESS}            Do not compress images by lowering quality");
+        Console.WriteLine($"  {Constants.Parameters.COMPRESS_PERCENT} <n>   Set the image quality compression percentage");
+        Console.WriteLine($"  {Constants.Parameters.MAX_IMAGE_WIDTH} <n>     Rescale images in output/images to have a maximum width of <n> pixels");
         Console.WriteLine("");
         Console.WriteLine("Commands");
-        Console.WriteLine("  --create                Builds /input directory, with default Markdown files and templates");
-        Console.WriteLine("  --build                 Build HTML files in /output directory");
+        Console.WriteLine($"  {Constants.Commands.CREATE}                Builds /input directory, with default Markdown files and templates");
+        Console.WriteLine($"  {Constants.Commands.BUILD}                 Build HTML files in /output directory");
         Console.WriteLine("");
         Console.WriteLine("Support available at: https://github.com/ScottLilly/MicroSiteMaker");
     }
