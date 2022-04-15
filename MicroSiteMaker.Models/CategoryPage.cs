@@ -4,6 +4,7 @@ namespace MicroSiteMaker.Models;
 
 public class CategoryPage : IHtmlPageSource
 {
+    public bool IncludeInCategories => false;
     public string CategoryName { get; }
     public string HtmlFileName { get; }
     public List<string> InputFileLines { get; }
