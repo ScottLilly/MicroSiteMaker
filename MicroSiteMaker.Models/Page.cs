@@ -10,11 +10,12 @@ public class Page : IHtmlPageSource
 
     private readonly FileInfo _fileInfo;
 
+    public bool IncludeInCategories =>
+        !Categories.Any(c => c.Equals("Exclude", StringComparison.InvariantCultureIgnoreCase));
     public List<string> InputFileLines { get; } = new List<string>();
     public List<string> OutputLines { get; } = new List<string>();
     public List<string> Categories { get; } = new List<string>();
 
-    public string FullName => _fileInfo.FullName;
     public string FileName => _fileInfo.Name;
     public string FileNameWithoutExtension =>
         Path.GetFileNameWithoutExtension(_fileInfo.Name);

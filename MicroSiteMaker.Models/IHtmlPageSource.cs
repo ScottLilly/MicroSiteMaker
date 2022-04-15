@@ -2,6 +2,7 @@
 
 public interface IHtmlPageSource
 {
+    public bool IncludeInCategories { get; }
     public string HtmlFileName { get; }
     public string MetaTagDescription { get; }
     public List<string> InputFileLines { get; }

@@ -79,27 +79,32 @@ public static class FileService
             }
             else
             {
-                foreach (var category in page.Categories)
+                if (page.IncludeInCategories)
                 {
-                    var categoryPage =
-                        website.CategoryPages.FirstOrDefault(cp =>
-                            (cp as CategoryPage).CategoryName.Equals(category));
-
-                    if (categoryPage == null)
+                    foreach (var category in page.Categories)
                     {
-                        categoryPage = new CategoryPage(category);
+                        var categoryPage =
+                            website.CategoryPages.FirstOrDefault(cp =>
+                                (cp as CategoryPage).CategoryName.Equals(category));
 
-                        website.CategoryPages.Add(categoryPage);
+                        if (categoryPage == null)
+                        {
+                            categoryPage = new CategoryPage(category);
+
+                            website.CategoryPages.Add(categoryPage);
+                        }
+
+                        categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
                     }
-
-                    categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
                 }
             }
         }
 
         foreach (IHtmlPageSource dateSortedPage in
-                 website.Pages.OrderByDescending(p => p.FileDateTime).ThenBy(p => p.Title))
+                 website.Pages.Where(p => p.IncludeInCategories)
+                     .OrderByDescending(p => p.FileDateTime).ThenBy(p => p.Title))
         {
+
             website.PagesByDatePage.InputFileLines.Add($"[{dateSortedPage.Title}]({dateSortedPage.HtmlFileName}) {dateSortedPage.FileDateTime.ToShortDateString()}");
         }
     }
