@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-
-namespace MicroSiteMaker.Core;
+﻿namespace MicroSiteMaker.Core;
 
 public static class Constants
 {
@@ -38,6 +36,11 @@ public static class Constants
         public const string EXCLUDE = "Exclude";
     }
 
+    public static class Menu
+    {
+        public const string SITE_INFORMATION_PAGE = "{{SiteInformationPage}}";
+    }
+
     public static class Directories
     {
         public static class Input
@@ -53,7 +56,6 @@ public static class Constants
             public const string ROOT = "output";
             public const string CSS = "css";
             public const string IMAGES = "images";
-
         }
     }
 }

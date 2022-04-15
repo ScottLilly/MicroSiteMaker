@@ -1,11 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using MicroSiteMaker.Core;
+﻿using MicroSiteMaker.Core;
 
 namespace MicroSiteMaker.Models;
 
 public class Website
 {
-    public ReadOnlyDictionary<string, string> Parameters { get; private set; }
+    public Dictionary<string, string> Parameters { get; private set; } =
+        new Dictionary<string, string>();
+    public List<string> MenuLines { get; } =
+        new List<string>();
 
     public List<IHtmlPageSource> Pages { get; }
     public List<IHtmlPageSource> CategoryPages { get; }
@@ -50,15 +52,18 @@ public class Website
         AssignArguments(args);
 
         Pages = new List<IHtmlPageSource>();
-        CategoryPages = new List<IHtmlPageSource>();
-        CategoryPages.Add(new CategoryPage(Constants.SpecialCategories.UNCATEGORIZED));
+        CategoryPages = new List<IHtmlPageSource>
+        {
+            new CategoryPage(Constants.SpecialCategories.UNCATEGORIZED)
+        };
+
         PagesByDatePage = new PageByDatePage();
         PagesByDatePage.InputFileLines.Add("# Pages by Date");
     }
 
     private void AssignArguments(IDictionary<string, string> args)
     {
-        Parameters = new ReadOnlyDictionary<string, string>(args);
+        Parameters = new Dictionary<string, string>(args);
 
         if (string.IsNullOrWhiteSpace(Url))
         {

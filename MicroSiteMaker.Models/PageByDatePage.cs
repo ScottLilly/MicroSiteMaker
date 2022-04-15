@@ -2,6 +2,7 @@
 
 public class PageByDatePage : IHtmlPageSource
 {
+    public bool IsSiteInformationPage => false;
     public bool IncludeInCategories => false;
     public string HtmlFileName { get; }
     public string MetaTagDescription { get; } = "";

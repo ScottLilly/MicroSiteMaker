@@ -2,6 +2,7 @@
 
 public interface IHtmlPageSource
 {
+    public bool IsSiteInformationPage { get; }
     public bool IncludeInCategories { get; }
     public string HtmlFileName { get; }
     public string MetaTagDescription { get; }
