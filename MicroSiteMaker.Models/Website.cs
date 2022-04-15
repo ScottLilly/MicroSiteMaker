@@ -50,6 +50,7 @@ public class Website
 
         Pages = new List<IHtmlPageSource>();
         CategoryPages = new List<IHtmlPageSource>();
+        CategoryPages.Add(new CategoryPage("Uncategorized"));
         PagesByDatePage = new PageByDatePage();
         PagesByDatePage.InputFileLines.Add("# Pages by Date");
     }
