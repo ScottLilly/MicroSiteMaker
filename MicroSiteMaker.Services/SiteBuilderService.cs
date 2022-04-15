@@ -38,7 +38,7 @@ public static class SiteBuilderService
     {
         var templateLines = FileService.GetPageTemplateLines(website);
 
-        foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
+        foreach (IHtmlPageSource page in website.AllPages)
         {
             foreach (string templateLine in templateLines)
             {

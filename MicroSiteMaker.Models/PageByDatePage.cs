@@ -4,11 +4,11 @@ public class PageByDatePage : IHtmlPageSource
 {
     public bool IncludeInCategories => false;
     public string HtmlFileName { get; }
-    public string MetaTagDescription { get; }
+    public string MetaTagDescription { get; } = "";
     public List<string> InputFileLines { get; }
     public List<string> OutputLines { get; }
     public string Title { get; } = "Pages by Date";
-    public DateTime FileDateTime { get; }
+    public DateTime FileDateTime { get; } = DateTime.Now;
 
     public PageByDatePage()
     {

@@ -82,7 +82,23 @@ public static class ExtensionMethods
         return string.Join(' ', properCasedWords);
     }
 
-    public static string UpperCaseFirstChar(this string s)
+    public static bool Matches(this string text, string matchingText)
+    {
+        return text.Equals(matchingText, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static string ToHtmlFileName(this string filename)
+    {
+        return filename
+            .ToLowerInvariant()
+            .Replace("  ", " ")
+            .Replace(" ", "-")
+            .Replace(".md", ".html");
+    }
+
+    #region Private methods
+
+    private static string UpperCaseFirstChar(this string s)
     {
         if (string.IsNullOrEmpty(s))
         {
@@ -94,4 +110,6 @@ public static class ExtensionMethods
 
         return new string(a);
     }
+
+    #endregion
 }
