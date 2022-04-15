@@ -150,7 +150,7 @@ public static class FileService
     {
         foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
         {
-            if (page is CategoryPage && ((CategoryPage)page).CategoryName == "Uncategorized")
+            if (page is CategoryPage {CategoryName: "Uncategorized"})
             {
                 // If "Uncategorized" Category page has no page links, do not create its html page
                 if (page.InputFileLines.Count > 1)
