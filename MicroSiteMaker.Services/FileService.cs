@@ -98,7 +98,7 @@ public static class FileService
         }
 
         foreach (IHtmlPageSource dateSortedPage in
-                 website.Pages.OrderBy(p => p.FileDateTime.Date).ThenBy(p => p.Title))
+                 website.Pages.OrderByDescending(p => p.FileDateTime).ThenBy(p => p.Title))
         {
             website.PagesByDatePage.InputFileLines.Add($"[{dateSortedPage.Title}]({dateSortedPage.HtmlFileName}) {dateSortedPage.FileDateTime.ToShortDateString()}");
         }
