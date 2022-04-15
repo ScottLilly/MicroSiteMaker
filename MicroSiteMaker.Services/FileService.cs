@@ -85,6 +85,12 @@ public static class FileService
                 categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
             }
         }
+
+        foreach (IHtmlPageSource dateSortedPage in
+                 website.Pages.OrderBy(p => p.FileDateTime.Date).ThenBy(p => p.Title))
+        {
+            website.PagesByDatePage.InputFileLines.Add($"[{dateSortedPage.Title}]({dateSortedPage.HtmlFileName}) {dateSortedPage.FileDateTime.ToShortDateString()}");
+        }
     }
 
     public static List<string> GetPageTemplateLines(Website website) =>

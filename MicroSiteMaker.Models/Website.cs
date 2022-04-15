@@ -8,9 +8,10 @@ public class Website
 
     public List<IHtmlPageSource> Pages { get; }
     public List<IHtmlPageSource> CategoryPages { get; }
+    public IHtmlPageSource PagesByDatePage { get; }
 
     public List<IHtmlPageSource> PagesAndCategoryPages =>
-        Pages.Concat(CategoryPages).ToList();
+        Pages.Concat(CategoryPages.Concat(new List<IHtmlPageSource> {PagesByDatePage})).ToList();
 
     public string Url =>
         Parameters.GetValueOrDefault("--url") ?? "";
@@ -49,6 +50,8 @@ public class Website
 
         Pages = new List<IHtmlPageSource>();
         CategoryPages = new List<IHtmlPageSource>();
+        PagesByDatePage = new PageByDatePage();
+        PagesByDatePage.InputFileLines.Add("# Pages by Date");
     }
 
     private void AssignArguments(IDictionary<string, string> args)
