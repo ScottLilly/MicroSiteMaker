@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Markdig;
+using MicroSiteMaker.Core;
 using MicroSiteMaker.Models;
 
 namespace MicroSiteMaker.Services;
@@ -55,40 +56,47 @@ public static class SiteBuilderService
                 }
             }
 
-            // Build robots tag from parameters
-            string followText = s_follow ? "follow" : "nofollow";
-            string indexText = s_index ? "index" : "noindex";
-            string robotsTag = $"<meta name=\"robots\" content=\"{followText}, {indexText}\">";
-
-            // Check if OutputLines already has robots tag
-            var robotsLine =
-                page.OutputLines.FirstOrDefault(line => line.Contains("meta ") && line.Contains("robots"));
-
-            // If so, replace. Otherwise, add it
-            if(robotsLine == null)
-            {
-                var closeHeadLine =
-                    page.OutputLines.First(line => line.Trim().StartsWith("</head"));
-                var closeHeadIndex =
-                    page.OutputLines.IndexOf(closeHeadLine);
-
-                page.OutputLines.Insert(closeHeadIndex, robotsTag);
-            }
-            else
-            {
-                page.OutputLines[page.OutputLines.IndexOf(robotsLine)] = robotsTag;
-            }
-
-            if (!string.IsNullOrWhiteSpace(page.MetaTagDescription))
-            {
-                var closeHeadLine =
-                    page.OutputLines.First(line => line.Trim().StartsWith("</head"));
-                var closeHeadIndex =
-                    page.OutputLines.IndexOf(closeHeadLine);
-
-                page.OutputLines.Insert(closeHeadIndex, $"<meta name=\"description\" content=\"{page.MetaTagDescription}\">");
-            }
+            AddRobotsMetaTagToOutputLines(page);
+            AddDescriptionMetaTagToOutputLines(page);
         }
+    }
+
+    private static void AddRobotsMetaTagToOutputLines(IHtmlPageSource page)
+    {
+        // Build robots tag from parameters
+        string followText = s_follow ? "follow" : "nofollow";
+        string indexText = s_index ? "index" : "noindex";
+        string robotsTag = $"<meta name=\"robots\" content=\"{followText}, {indexText}\">";
+
+        // Check if OutputLines already has robots tag
+        var robotsLine =
+            page.OutputLines.FirstOrDefault(line => line.Contains("meta ") && line.Contains("robots"));
+
+        // If robots line does not exist, add it. Otherwise, replace the existing one.
+        if (robotsLine == null)
+        {
+            page.OutputLines.Insert(IndexOfClosingHeadTagInOutputLines(page), robotsTag);
+        }
+        else
+        {
+            page.OutputLines[page.OutputLines.IndexOf(robotsLine)] = robotsTag;
+        }
+    }
+
+    private static void AddDescriptionMetaTagToOutputLines(IHtmlPageSource page)
+    {
+        if (string.IsNullOrWhiteSpace(page.MetaTagDescription))
+        {
+            return;
+        }
+
+        page.OutputLines.Insert(IndexOfClosingHeadTagInOutputLines(page),
+            $"<meta name=\"description\" content=\"{page.MetaTagDescription}\">");
+    }
+
+    private static int IndexOfClosingHeadTagInOutputLines(IHtmlPageSource page)
+    {
+        return page.OutputLines.IndexOf(page.OutputLines.First(line => line.Trim().StartsWith("</head")));
     }
 
     private static string GetCleanedHtmlLine(Website website, IHtmlPageSource page, string line)
@@ -106,20 +114,17 @@ public static class SiteBuilderService
 
         var htmlLine = Markdown.ToHtml(cleanedLine);
 
-        htmlLine = MakeExternalLinksOpenInNewTab(htmlLine, website.Url);
-
-        return htmlLine;
+        return MakeExternalLinksOpenInNewTab(htmlLine, website.Url);
     }
 
     private static string MakeExternalLinksOpenInNewTab(string htmlLine, string websiteName)
     {
-        string hrefPattern = @"(<a href.*?>)";
+        Match regexMatch =
+            Regex.Match(htmlLine, Constants.Regexes.A_HREF,
+                RegexOptions.IgnoreCase | RegexOptions.Compiled,
+                TimeSpan.FromSeconds(1));
 
-        Match regexMatch = Regex.Match(htmlLine, hrefPattern,
-            RegexOptions.IgnoreCase | RegexOptions.Compiled,
-            TimeSpan.FromSeconds(1));
-
-        string outputLine = htmlLine;
+        string cleanedLine = htmlLine;
 
         while (regexMatch.Success)
         {
@@ -140,12 +145,12 @@ public static class SiteBuilderService
                     newHrefText = newHrefText.Replace(">", " rel=\"nofollow\">");
                 }
 
-                outputLine = outputLine.Replace(hrefText, newHrefText);
+                cleanedLine = cleanedLine.Replace(hrefText, newHrefText);
             }
 
             regexMatch = regexMatch.NextMatch();
         }
 
-        return outputLine;
+        return cleanedLine;
     }
 }

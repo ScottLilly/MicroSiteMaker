@@ -29,6 +29,7 @@ public static class Constants
         public const string CATEGORIES = @"{{Categories:(.*?)}}";
         public const string META_TAG_DESCRIPTION = @"{{Meta-Description:(.*?)}}";
         public const string TITLE_OVERRIDE = @"{{Title:(.*?)}}";
+        public const string A_HREF = @"(<a href.*?>)";
     }
 
     public static class SpecialCategories
