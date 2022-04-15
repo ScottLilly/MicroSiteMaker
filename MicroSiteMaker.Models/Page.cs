@@ -11,6 +11,7 @@ public class Page : IHtmlPageSource
     private string FileNameWithoutExtension =>
         Path.GetFileNameWithoutExtension(_fileInfo.Name);
 
+    public bool IsSiteInformationPage { get; private set; } = false;
     public string Title { get; private set; }
     public string MetaTagDescription { get; private set; } = "";
     public List<string> InputFileLines { get; } = new List<string>();
@@ -36,7 +37,8 @@ public class Page : IHtmlPageSource
     {
         foreach (string line in File.ReadAllLines(fileInfo.FullName))
         {
-            if (LineContainsCategories(line) ||
+            if (LineIsSiteInformationPage(line) ||
+                LineContainsCategories(line) ||
                 LineContainsMetaTagDescription(line) ||
                 LineContainsTitleOverride(line))
             {
@@ -47,10 +49,22 @@ public class Page : IHtmlPageSource
         }
     }
 
+    private bool LineIsSiteInformationPage(string line)
+    {
+        if (line.Trim().Matches(Constants.Menu.SITE_INFORMATION_PAGE))
+        {
+            IsSiteInformationPage = true;
+
+            return true;
+        }
+
+        return false;
+    }
+
     private bool LineContainsCategories(string line)
     {
         MatchCollection categories =
-            Regex.Matches(line, Constants.Regexes.CATEGORIES);
+            Regex.Matches(line, Constants.Regexes.CATEGORIES, RegexOptions.IgnoreCase);
 
         if (categories.Count > 0)
         {
@@ -71,7 +85,7 @@ public class Page : IHtmlPageSource
     private bool LineContainsMetaTagDescription(string line)
     {
         MatchCollection metaTagDescription =
-            Regex.Matches(line, Constants.Regexes.META_TAG_DESCRIPTION);
+            Regex.Matches(line, Constants.Regexes.META_TAG_DESCRIPTION, RegexOptions.IgnoreCase);
 
         if (metaTagDescription.Count > 0)
         {
@@ -91,7 +105,7 @@ public class Page : IHtmlPageSource
     private bool LineContainsTitleOverride(string line)
     {
         MatchCollection titleOverride =
-            Regex.Matches(line, Constants.Regexes.TITLE_OVERRIDE);
+            Regex.Matches(line, Constants.Regexes.TITLE_OVERRIDE, RegexOptions.IgnoreCase);
 
         if (titleOverride.Count > 0)
         {
