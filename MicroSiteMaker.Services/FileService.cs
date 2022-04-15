@@ -69,20 +69,31 @@ public static class FileService
             var page = new Page(fileInfo);
             website.Pages.Add(page);
 
-            foreach (var category in page.Categories)
+            if (page.Categories.Count == 0)
             {
-                var categoryPage =
+                var uncategorizedCategoryPage =
                     website.CategoryPages.FirstOrDefault(cp =>
-                        (cp as CategoryPage).CategoryName.Equals(category));
+                        (cp as CategoryPage).CategoryName.Equals("Uncategorized"));
 
-                if (categoryPage == null)
+                uncategorizedCategoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
+            }
+            else
+            {
+                foreach (var category in page.Categories)
                 {
-                    categoryPage = new CategoryPage(category);
+                    var categoryPage =
+                        website.CategoryPages.FirstOrDefault(cp =>
+                            (cp as CategoryPage).CategoryName.Equals(category));
 
-                    website.CategoryPages.Add(categoryPage);
+                    if (categoryPage == null)
+                    {
+                        categoryPage = new CategoryPage(category);
+
+                        website.CategoryPages.Add(categoryPage);
+                    }
+
+                    categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
                 }
-
-                categoryPage.InputFileLines.Add($"[{page.Title}]({page.HtmlFileName})");
             }
         }
 
@@ -139,7 +150,18 @@ public static class FileService
     {
         foreach (IHtmlPageSource page in website.PagesAndCategoryPages)
         {
-            CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
+            if (page is CategoryPage && ((CategoryPage)page).CategoryName == "Uncategorized")
+            {
+                // If "Uncategorized" Category page has no page links, do not create its html page
+                if (page.InputFileLines.Count > 1)
+                {
+                    CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
+                }
+            }
+            else
+            {
+                CreateFile(website.OutputRootDirectory, $"{page.HtmlFileName}", page.OutputLines);
+            }
         }
 
         Console.WriteLine($"Total HTML files created: {website.Pages.Count}");
