@@ -61,6 +61,56 @@ public class Website
         PagesByDatePage.InputFileLines.Add("# Pages by Date");
     }
 
+    public void PopulateMenuLines()
+    {
+        MenuLines.Clear();
+
+        MenuLines.Add("<div class=\"menu\">");
+        MenuLines.Add("<ul>");
+
+        MenuLines.Add("<li class=\"dropdown\">");
+        MenuLines.Add("<a class=\"dropbtn\" href=\"./about.html\">Home</a>");
+        MenuLines.Add("</li>");
+
+        MenuLines.Add("<li class=\"dropdown\">");
+        MenuLines.Add("<a class=\"dropbtn\">Pages by Category</a>");
+        MenuLines.Add("<div class=\"dropdown-content\">");
+
+        // Add all Category pages, except UNCATEGORIZED
+        foreach (var categoryPage in CategoryPages
+                     .Where(cp => !cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
+                     .OrderBy(cp=> cp.Title))
+        {
+            MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
+        }
+
+        // Add UNCATEGORIZED CategoryPage
+        foreach (var categoryPage in CategoryPages
+                     .Where(cp => cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
+                     .OrderBy(cp => cp.Title))
+        {
+            MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
+        }
+
+        MenuLines.Add("</div>");
+        MenuLines.Add("</li>");
+
+        MenuLines.Add("<li class=\"dropdown\">");
+        MenuLines.Add("<a class=\"dropbtn\" href=\"./pages-by-date.html\">Pages by Date</a>");
+        MenuLines.Add("</li>");
+
+        MenuLines.Add("<li class=\"dropdown\">");
+        MenuLines.Add("<a class=\"dropbtn\">Site Information</a>");
+        MenuLines.Add("<div class=\"dropdown-content\">");
+        MenuLines.Add("<a href=\"./contact.html\">Contact</a>");
+        MenuLines.Add("<a href=\"./privacy-policy.html\">Privacy Policy</a>");
+        MenuLines.Add("</div>");
+        MenuLines.Add("</li>");
+
+        MenuLines.Add("</ul>");
+        MenuLines.Add("</div>");
+    }
+
     private void AssignArguments(IDictionary<string, string> args)
     {
         Parameters = new Dictionary<string, string>(args);

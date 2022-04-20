@@ -1,9 +1,10 @@
 ﻿body {
 	font-family: Arial, Helvetica, sans-serif;
-	background-color: #d8d8d8;
+    background: linear-gradient(to bottom, #1F3044 0%, #1F3044 25%, #000000 25%, #646C79 25%, #646C79 100%);
 	max-width: 800px;
 	margin: auto;
-	margin-top: 10px;
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
 h1 {
 	font-size: 1.75em;
@@ -26,7 +27,6 @@ p {
 	font-size: 12pt;
 	font-weight: bold;
 	padding: 10px;
-    border-radius: 15px;
 }
 .footer {
 	font-size: 10pt;
