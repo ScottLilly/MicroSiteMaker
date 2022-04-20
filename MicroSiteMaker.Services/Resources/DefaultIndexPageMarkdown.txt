@@ -1,3 +1,5 @@
-﻿# Welcome to {{website-name}}
+﻿{{Categories:Exclude}}
+{{Title:Home}}
+# Welcome to {{website-name}}
 
 This is the world's greatest website about things and stuff

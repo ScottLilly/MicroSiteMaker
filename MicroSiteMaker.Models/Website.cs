@@ -72,28 +72,32 @@ public class Website
         MenuLines.Add("<a class=\"dropbtn\" href=\"./about.html\">Home</a>");
         MenuLines.Add("</li>");
 
-        MenuLines.Add("<li class=\"dropdown\">");
-        MenuLines.Add("<a class=\"dropbtn\">Pages by Category</a>");
-        MenuLines.Add("<div class=\"dropdown-content\">");
-
-        // Add all Category pages, except UNCATEGORIZED
-        foreach (var categoryPage in CategoryPages
-                     .Where(cp => !cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
-                     .OrderBy(cp=> cp.Title))
+        if(CategoryPages
+           .Any(cp => !cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase)))
         {
-            MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
-        }
+            MenuLines.Add("<li class=\"dropdown\">");
+            MenuLines.Add("<a class=\"dropbtn\">Pages by Category</a>");
+            MenuLines.Add("<div class=\"dropdown-content\">");
 
-        // Add UNCATEGORIZED CategoryPage
-        foreach (var categoryPage in CategoryPages
-                     .Where(cp => cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
-                     .OrderBy(cp => cp.Title))
-        {
-            MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
-        }
+            // Add all Category pages, except UNCATEGORIZED
+            foreach (var categoryPage in CategoryPages
+                         .Where(cp => !cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
+                         .OrderBy(cp => cp.Title))
+            {
+                MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
+            }
 
-        MenuLines.Add("</div>");
-        MenuLines.Add("</li>");
+            // Add UNCATEGORIZED CategoryPage
+            foreach (var categoryPage in CategoryPages
+                         .Where(cp => cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
+                         .OrderBy(cp => cp.Title))
+            {
+                MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
+            }
+
+            MenuLines.Add("</div>");
+            MenuLines.Add("</li>");
+        }
 
         MenuLines.Add("<li class=\"dropdown\">");
         MenuLines.Add("<a class=\"dropbtn\" href=\"./pages-by-date.html\">Pages by Date</a>");
