@@ -30,6 +30,7 @@ public static class SiteBuilderService
         FileService.CopyImageFilesToOutputDirectory(website);
 
         CreateOutputPageHtml(website);
+
         FileService.WriteOutputFiles(website);
         FileService.CreateSitemapFile(website);
         FileService.CreateRobotsTextFile(website);
@@ -37,6 +38,8 @@ public static class SiteBuilderService
 
     private static void CreateOutputPageHtml(Website website)
     {
+        website.PopulateMenuLines();
+
         var templateLines = FileService.GetPageTemplateLines(website);
 
         foreach (IHtmlPageSource page in website.AllPages)
@@ -48,6 +51,13 @@ public static class SiteBuilderService
                     foreach (string inputLine in page.InputFileLines)
                     {
                         page.OutputLines.Add(GetCleanedHtmlLine(website, page, inputLine));
+                    }
+                }
+                else if (templateLine.StartsWith("{{menu}}"))
+                {
+                    foreach (string menuLine in website.MenuLines)
+                    {
+                        page.OutputLines.Add(GetCleanedHtmlLine(website, page, menuLine));
                     }
                 }
                 else

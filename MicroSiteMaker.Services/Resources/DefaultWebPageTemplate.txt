@@ -6,6 +6,7 @@
 </head>
 <body>
 <div class="content">
+{{menu}}
 {{page-content}}
 <div class="footer">
 <hr/>
