@@ -55,7 +55,7 @@
 
   <ItemGroup>
     <Compile Update="ArgParser.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
 
