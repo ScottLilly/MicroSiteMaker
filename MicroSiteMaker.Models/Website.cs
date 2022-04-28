@@ -84,12 +84,16 @@ public class Website
             MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
         }
 
-        // Add UNCATEGORIZED CategoryPage
-        foreach (var categoryPage in CategoryPages
-                     .Where(cp => cp.Title.Contains(Constants.SpecialCategories.UNCATEGORIZED, StringComparison.InvariantCultureIgnoreCase))
-                     .OrderBy(cp => cp.Title))
+        // Add UNCATEGORIZED CategoryPage, if there are any uncategorized pages
+        var uncategorizedPage =
+            CategoryPages.FirstOrDefault(cp =>
+                cp.Title.Matches(Constants.SpecialCategories.UNCATEGORIZED));
+
+        Console.WriteLine($"Uncategorized page(s) exist: {uncategorizedPage == null}");
+
+        if (uncategorizedPage != null)
         {
-            MenuLines.Add($"<a href=\"./{categoryPage.HtmlFileName}\">{categoryPage.Title.Replace("Category: ", "").Trim()}</a>");
+            MenuLines.Add($"<a href=\"./{uncategorizedPage.HtmlFileName}\">{uncategorizedPage.Title.Replace("Category: ", "").Trim()}</a>");
         }
 
         MenuLines.Add("</div>");
