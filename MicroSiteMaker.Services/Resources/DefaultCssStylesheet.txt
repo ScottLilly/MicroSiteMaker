@@ -39,6 +39,9 @@ hr {
 	font-size: 10pt;
 	margin-top: 15px;
 }
+div.menu p {
+	margin: 0px;
+}
 div.menu ul {
   list-style-type: none;
   margin: 0px;

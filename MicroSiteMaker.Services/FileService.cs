@@ -55,7 +55,20 @@ public static class FileService
 
         if (rootDirectory.Exists)
         {
-            rootDirectory.Delete(true);
+            foreach (FileInfo file in rootDirectory.GetFiles())
+            {
+                file.Delete();
+            }
+
+            if (Directory.Exists(website.OutputCssDirectory))
+            {
+                new DirectoryInfo(website.OutputCssDirectory).Delete(true);
+            }
+
+            if (Directory.Exists(website.OutputImagesDirectory))
+            {
+                new DirectoryInfo(website.OutputImagesDirectory).Delete(true);
+            }
         }
 
         // Create the new folders and files
