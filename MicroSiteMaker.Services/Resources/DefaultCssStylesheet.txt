@@ -26,6 +26,7 @@ p {
 	margin: 5px;
 	margin-left: 0px;
 	margin-right: 0px;
+	padding-bottom: 7px;
 }
 hr {
 	margin: 0px;
@@ -41,6 +42,7 @@ hr {
 }
 div.menu p {
 	margin: 0px;
+	padding: 0px;
 }
 div.menu ul {
   list-style-type: none;
